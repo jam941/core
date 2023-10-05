@@ -1,7 +1,0 @@
-{
-    "rewrites": [
-      {"source": "/quest/", "destination": "https://rs3-quests.vercel.app/quest/"},
-      {"source": "/quest/:match*", "destination": "https://rs3-quests.vercel.app/quest/:match*"}
-      
-    ]
-}
