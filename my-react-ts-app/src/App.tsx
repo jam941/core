@@ -1,24 +1,37 @@
-import React from 'react';
+import React, { useState } from 'react';
 import logo from './logo.svg';
 import './App.css';
+import Card from './Components/Card';
+import getJobs from './Services/GetJobs';
+import { Job } from './Interfaces/CardType';
+import { AxiosResponse } from 'axios';
+
+
+
 
 function App() {
+  
+  
+  
+  const [jobs,setJobs] = useState();
+  
+  async function  popJobs(){
+     getJobs().then(e=>{
+      setJobs(e.data.data)
+     });
+  }
+
+  const [start,setStart] = useState(()=>{
+    popJobs();
+  })
+  
+
   return (
     <div className="App">
       <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
+        <Card data = {jobs}/>
       </header>
+      
     </div>
   );
 }
