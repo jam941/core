@@ -13,7 +13,7 @@ function App() {
   
   
   
-  const [jobs,setJobs] = useState();
+  const [jobs,setJobs] = useState([]);
   
   async function  popJobs(){
      getJobs().then(e=>{
@@ -29,7 +29,8 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <Card data = {jobs}/>
+        {jobs && jobs.map((item, index) => <Card key={index} data={item} />)}
+        
       </header>
       
     </div>
