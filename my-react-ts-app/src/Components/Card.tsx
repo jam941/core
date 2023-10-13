@@ -10,7 +10,6 @@ function Card(props: any){
     return(
         <div className={`border-l-4 ${type ? 'border-blue-500' : 'border-red-500'} max-w-md mx-auto bg-gray-800 rounded-xl shadow-md overflow-hidden md:max-w-2xl`}>
             <div className="bg-gray-700 p-4 flex items-center justify-between space-x-4">
-                <span className="inline-block bg-blue-700 text-blue-300 px-2 py-1 rounded-full text-sm font-semibold tracking-wide">{data.Type}</span>
                 <p className="text-sm text-white font-bold">{data.Company}</p>
                 <h3 className="text-sm leading-tight font-medium">{data.Title}</h3>
                 <p className="text-sm">{data.StartDate} - {data.EndDate}</p>
