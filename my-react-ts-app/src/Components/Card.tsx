@@ -6,9 +6,7 @@ function Card(props: any){
     const [isOpen,setOpen] = useState(true);
 
     var data = props.data;
-    if(!data.Color){
-        return(<div></div>);
-    }
+    
     
     const toggleDetail = (openStatus: boolean, event:any)=>{
         setOpen(openStatus)

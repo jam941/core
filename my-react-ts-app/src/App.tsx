@@ -25,10 +25,17 @@ function App() {
     popJobs();
   })
   
-
+  //Spinner provided by https://codepen.io/GeoffreyCrofte/pen/nPPVpz
+  const getSpinner = ()=>{return (<span className="ouro">
+    <span className="left"><span className="anim"></span></span>
+    <span className="right"><span className="anim"></span></span>
+    </span>)
+  }
+  if(jobs.length == 0){
+    return getSpinner();
+  }
   return (
-    <div className="App">
-      
+    <div className="canvas">
       <div className="w-1/2 space-y-1 ">
       {jobs && jobs.map((item, index) => <Card key={index} data={item} />)}
       </div>
