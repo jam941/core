@@ -28,10 +28,10 @@ function App() {
 
   return (
     <div className="App">
-      <header className="App-header">
-        {jobs && jobs.map((item, index) => <Card key={index} data={item} />)}
-        
-      </header>
+      
+      <div className="w-1/2 space-y-1 ">
+      {jobs && jobs.map((item, index) => <Card key={index} data={item} />)}
+      </div>
       
     </div>
   );
