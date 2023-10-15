@@ -13,6 +13,17 @@ function Card(props: any){
     const toggleDetail = (openStatus: boolean)=>{
         setOpen(openStatus)
     }
+
+    const getDescList = ()=>{
+        var desc = data.Description.split("##").slice(1)
+        console.log(desc)
+        //<p className="text-sm leading-tight text-white">{data.Description}</p>
+        return (<ul className="list-disc pl-4">
+
+                    {desc.map((item: any, index: any) => (<li className="text-sm leading-tight text-white mb-1" key={index}>{item}</li>))} 
+
+                </ul>)
+    }
     var color = data.Color.toLowerCase();
     return(
         <div className={`border-l-4 border-${color}-500  max-w-md  mx-auto bg-gray-800 rounded-xl shadow-md overflow-hidden md:max-w-2xl min-w-full`} >
@@ -24,11 +35,11 @@ function Card(props: any){
             </div>
             <div className="p-4">
                 {isOpen ? 
-                <p className="text-sm leading-tight text-white">{data.Description}</p> :
+                 getDescList():
                 <p className="text-sm leading-tight text-white">{data.Brief}</p> }
                 {isOpen ? 
-                <p className="inline-block bg-blue-700 text-white px-2 py-1 rounded-full text-sm font-semibold tracking-wide" onClick={()=>toggleDetail(false)}>Details</p> :
-                <p className="inline-block bg-blue-700 text-white px-2 py-1 rounded-full text-sm font-semibold tracking-wide" onClick={()=>toggleDetail(true)}>Hide</p> }
+                <p className="inline-block bg-blue-700 text-white px-2 py-1 rounded-full text-sm font-semibold tracking-wide" onClick={()=>toggleDetail(false)}>Hide</p>:
+                <p className="inline-block bg-blue-700 text-white px-2 py-1 rounded-full text-sm font-semibold tracking-wide" onClick={()=>toggleDetail(true)}>Details</p>}
             </div>
             <div className="bg-gray-900 p-4">
                 <p className="text-sm text-white">Skills: {data.Skills}</p>
