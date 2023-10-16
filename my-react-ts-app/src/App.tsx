@@ -5,6 +5,7 @@ import Card from './Components/Card';
 import getJobs from './Services/GetJobs';
 import { Job } from './Interfaces/CardType';
 import { AxiosResponse } from 'axios';
+import Bio from './Components/Bio';
 
 
 
@@ -36,6 +37,7 @@ function App() {
   }
   return (
     <div className="canvas">
+      <Bio/>
       <div className="w-1/2 space-y-1 ">
       {jobs && jobs.map((item, index) => <Card key={index} data={item} />)}
       </div>
