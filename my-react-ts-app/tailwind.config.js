@@ -4,7 +4,11 @@ module.exports = {
   purge: ['./src/**/*.{js,jsx,ts,tsx}', './public/index.html'],
   content: [],
   theme: {
-    extend: {},
+    extend: {
+      spacing: {
+        '10p': '10%', // Define a new spacing value for 10%
+      },
+    },
   },
   plugins: [],
   colors: {

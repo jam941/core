@@ -37,12 +37,12 @@ function App() {
   }
   return (
 
-    <div className="flex canvas">
-      <div className="w-1/4 h-screen overflow-hidden">
+    <div className="dark flex canvas">
+      <div className="w-1/4 ml-10p h-screen">
           <Bio/>
       </div>
-      <div className="w-1/5"></div> {/* Spacer div */}
-      <div className="w-1/3 overflow-y-scroll">
+      <div className="w-2/4"></div> {/* Spacer div */}
+      <div className="w-1/4 dark mr-10p right max-h-screen overflow-y-auto">
           {jobs && jobs.map((item, index) => <Card key={index} data={item} />)}
       </div>
     </div>
