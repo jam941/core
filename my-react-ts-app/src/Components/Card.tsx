@@ -35,7 +35,7 @@ function Card(props: any){
     
 
     return(
-        <div className={`border-l-4 ${getColor()}  max-w-md  mx-auto bg-gray-800 rounded-xl shadow-md overflow-hidden md:max-w-2xl min-w-full mb-2`} >
+        <div className={`dark border-l-4 ${getColor()}  max-w-md  mx-auto bg-gray-800 rounded-xl shadow-md overflow-hidden md:max-w-2xl min-w-full mb-2`} >
             <div className="bg-gray-700 p-4 flex items-center justify-between space-x-4">
             <p className="text-sm text-white font-bold">{data.Type}</p>
                 <p className="text-sm text-white font-bold">{data.Company}</p>
