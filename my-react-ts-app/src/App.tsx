@@ -36,14 +36,17 @@ function App() {
     return getSpinner();
   }
   return (
-    <div className="canvas">
-      <Bio/>
-      <div className="w-1/2 space-y-1 ">
-      {jobs && jobs.map((item, index) => <Card key={index} data={item} />)}
+
+    <div className="container flex h-screen w-screen canvas">
+      <div className="left w-1/3 h-screen overflow-hidden">
+        <Bio/>
       </div>
-      
+      <div className="right w-2/3 ml-1/3 h-screen overflow-y-scroll">
+        {jobs && jobs.map((item, index) => <Card key={index} data={item} />)}
+      </div>
     </div>
   );
+  //<div className="w-1/2 space-y-1 ">
 }
 
 export default App;
