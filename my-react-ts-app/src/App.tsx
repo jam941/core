@@ -87,9 +87,9 @@ function App() {
       
       <div className="w-1/3"></div> {/* Spacer div */}
       
-      <div className="flex flex-col w-1/3">
+      <div className="flex flex-col mt-10 space-y-10 w-1/3">
 
-        <div className="h-1/8 text-white space-x-1 space-y-1">
+        <div className="h-1/8  text-white space-x-1 space-y-1">
           {filterButton(filter,"Machine Learning  / AI", "ml")}
           {filterButton(filter,"Frontend Development", "frontend")}
           {filterButton(filter,"Backend Development", "backend")}
@@ -103,7 +103,7 @@ function App() {
           {filterButton(filter,"C#", "c#")}
         </div>
 
-        <div className="h-3/4 flex-1 dark mr-10p right overflow-y-auto">
+        <div className="h-3/4 flex-1 pt-1 dark mr-10p overflow-y-auto">
           <div className="py-5 px-10p">
             {jobs && jobs.map((item, index) => <Card key={index} data={item} />)}
           </div>
