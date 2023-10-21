@@ -35,11 +35,12 @@ function Card(props: any){
     
 
     return(
-        <div className={`dark border-l-4 ${getColor()} mt-4  max-w-md  mx-auto bg-gray-800 rounded-xl shadow-md overflow-hidden md:max-w-2xl min-w-full mb-2`} >
+        <>
+        <div className={`dark border-l-4 ${getColor()} mt-4 w-3/5 mx-auto bg-gray-800 rounded-xl shadow-md overflow-hidden md:max-w-2xl md:w-auto min-w-full mb-2`}>
             <div className="bg-gray-700 p-4 flex items-center justify-between space-x-4">
             <p className="text-sm text-white font-bold">{data.Type}</p>
                 <p className="text-sm text-white font-bold">{data.Company}</p>
-                <h3 className="text-sm text-white leading-tight font-medium">{data.Title}</h3>
+                <h3 className="text-sm text-white leading-tight font-medium hidden md:block">{data.Title}</h3>
                 <p className="text-sm text-white">{data.StartDate} - {data.EndDate}</p>
             </div>
             <div className="p-4">
@@ -54,6 +55,11 @@ function Card(props: any){
                 <p className="text-sm text-white">Skills: {data.Skills}</p>
             </div>
         </div>
+        <div>
+            
+        </div>
+        </>
+        
         
         
             

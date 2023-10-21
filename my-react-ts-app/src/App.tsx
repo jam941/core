@@ -80,14 +80,14 @@ function App() {
   }
   return (
 
-    <div className="dark flex canvas max-h-screen max-v-screen w-screen h-screen">
+    <div className="dark flex flex-col md:flex-row canvas max-h-screen max-v-screen w-screen h-screen min-h-screen bg-fixed bg-cover bg-background">
       <div className="w-1/3 ml-10p">
           <Bio/>
       </div>
       
       <div className="w-1/3"></div> {/* Spacer div */}
       
-      <div className="flex flex-col mt-10 space-y-10 w-1/3">
+      <div className="flex flex-col mt-10 space-y-10 w-auto md:w-1/3 canvas">
 
         <div className="h-1/8  text-white space-x-1 space-y-1 hidden md:block">
           {filterButton(filter,"Machine Learning  / AI", "ml")}
@@ -103,12 +103,12 @@ function App() {
           {filterButton(filter,"C#", "c#")}
         </div>
 
-        <div className="h-2/3 flex-1 pt-1 dark mr-10p overflow-y-auto">
+        <div className="h-2/3 flex-1 pt-1 dark mr-10p md:overflow-y-auto canvas">
           <div className="py-5 px-10p">
             {jobs && jobs.map((item, index) => <Card key={index} data={item} />)}
           </div>
         </div>
-        <div className="h-1/8">
+        <div className="md:h-1/8">
 
         </div>
       </div>

@@ -20,7 +20,7 @@ module.exports = {
   plugins: [],
   colors: {
     'text': '#fcfdfc',
-    'background': '#101411',
+    'background': '#282c34',
     'primary': '#536558',
     'secondary': '#121614',
     'accent': '#6e8776',
