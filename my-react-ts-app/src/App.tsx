@@ -56,6 +56,19 @@ function App() {
     popJobs();
   })
   
+  const filterButton = (testFilter:any, title:string,metaShort:string)=>{
+    var isDisplayed = testFilter===metaShort;
+    var style = "border border-white p-2 rounded-lg shadow-md "
+    isDisplayed ? style+="bg-buttonOn":style+="bg-transparent text-white"
+    return(
+    <button
+      className={style}
+      onClick={() => changeFilter(metaShort)}
+    >
+      {title}
+    </button>)
+  }
+
   //Spinner provided by https://codepen.io/GeoffreyCrofte/pen/nPPVpz
   const getSpinner = ()=>{return (<span className="ouro">
     <span className="left"><span className="anim"></span></span>
@@ -71,14 +84,18 @@ function App() {
       <div className="w-1/3 ml-10p">
           <Bio/>
       </div>
-      <div>
-      <button
-      className={`border border-white p-2 rounded-lg shadow-md  
-                  ${filter==="ml" ? 'bg-transparent text-white' : 'bg-gray-200'}`}
-      onClick={() => changeFilter("ml")}
-    >
-      Machine Learning
-    </button>
+      <div className="text-white">
+        {filterButton(filter,"Machine Learning  / AI", "ml")}
+        {filterButton(filter,"Frontend Development", "frontend")}
+        {filterButton(filter,"Backend Development", "backend")}
+        {filterButton(filter,"Cloud / AWS", "cloud")}
+        {filterButton(filter,"Testing", "testing")}
+        {filterButton(filter,"Java", "javac")}
+        {filterButton(filter,"Javascript / Typescript", "javascript")}
+        {filterButton(filter,"Vue", "vue")}
+        {filterButton(filter,"React", "react")}
+        {filterButton(filter,"Python", "python")}
+        {filterButton(filter,"C#", "c#")}
       </div>
       <div className="w-1/3"></div> {/* Spacer div */}
       

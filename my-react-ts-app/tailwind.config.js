@@ -8,6 +8,9 @@ module.exports = {
       spacing: {
         '10p': '10%', // Define a new spacing value for 10%
       },
+      backgroundColor: {
+        'buttonOn':'#1F8FF5'
+      },
     },
   },
   plugins: [],
@@ -17,6 +20,7 @@ module.exports = {
     'primary': '#536558',
     'secondary': '#121614',
     'accent': '#6e8776',
+    
    },
 }
 
