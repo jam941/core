@@ -5,6 +5,10 @@ module.exports = {
   content: [],
   theme: {
     extend: {
+      height: {
+        '1/8': '12.5%',
+        
+      },
       spacing: {
         '10p': '10%', // Define a new spacing value for 10%
       },

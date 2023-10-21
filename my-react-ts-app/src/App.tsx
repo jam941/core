@@ -84,26 +84,35 @@ function App() {
       <div className="w-1/3 ml-10p">
           <Bio/>
       </div>
-      <div className="text-white space-x-2 space-y-2">
-        {filterButton(filter,"Machine Learning  / AI", "ml")}
-        {filterButton(filter,"Frontend Development", "frontend")}
-        {filterButton(filter,"Backend Development", "backend")}
-        {filterButton(filter,"Cloud / AWS", "cloud")}
-        {filterButton(filter,"Testing", "testing")}
-        {filterButton(filter,"Java", "javac")}
-        {filterButton(filter,"Javascript / Typescript", "javascript")}
-        {filterButton(filter,"Vue", "vue")}
-        {filterButton(filter,"React", "react")}
-        {filterButton(filter,"Python", "python")}
-        {filterButton(filter,"C#", "c#")}
-      </div>
+      
       <div className="w-1/3"></div> {/* Spacer div */}
       
-      <div className="w-1/3 dark mr-10p right overflow-y-auto">
-        <div className="py-5 px-10p">
-          {jobs && jobs.map((item, index) => <Card key={index} data={item} />)}
+      <div className="flex flex-col w-1/3">
+
+        <div className="h-1/8 text-white space-x-1 space-y-1">
+          {filterButton(filter,"Machine Learning  / AI", "ml")}
+          {filterButton(filter,"Frontend Development", "frontend")}
+          {filterButton(filter,"Backend Development", "backend")}
+          {filterButton(filter,"Cloud / AWS", "cloud")}
+          {filterButton(filter,"Testing", "testing")}
+          {filterButton(filter,"Java", "javac")}
+          {filterButton(filter,"Javascript / Typescript", "javascript")}
+          {filterButton(filter,"Vue", "vue")}
+          {filterButton(filter,"React", "react")}
+          {filterButton(filter,"Python", "python")}
+          {filterButton(filter,"C#", "c#")}
+        </div>
+
+        <div className="h-3/4 flex-1 dark mr-10p right overflow-y-auto">
+          <div className="py-5 px-10p">
+            {jobs && jobs.map((item, index) => <Card key={index} data={item} />)}
+          </div>
+        </div>
+        <div className="h-1/8">
+
         </div>
       </div>
+      
       
     </div>
   );
