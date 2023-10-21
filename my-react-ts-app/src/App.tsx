@@ -37,13 +37,16 @@ function App() {
   }
   return (
 
-    <div className="dark flex canvas overflow-hidden">
-      <div className="w-1/4 ml-10p h-screen overflow-hidden">
+    <div className="dark flex canvas max-h-screen">
+      <div className="w-1/3 ml-10p">
           <Bio/>
       </div>
-      <div className="w-2/4 overflow-hidden"></div> {/* Spacer div */}
-      <div className="w-1/4 dark mt-10 mb-10 mr-10p right max-h-screen overflow-y-auto">
+      <div className="w-1/3"></div> {/* Spacer div */}
+      <div className="w-1/3 dark mr-10p right overflow-y-auto">
+        <div className="py-5 px-10p">
           {jobs && jobs.map((item, index) => <Card key={index} data={item} />)}
+        </div>
+          
       </div>
     </div>
   );
