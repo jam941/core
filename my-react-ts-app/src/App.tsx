@@ -67,7 +67,7 @@ function App() {
     >
       {title}
     </button>)
-  }
+  } 
 
   //Spinner provided by https://codepen.io/GeoffreyCrofte/pen/nPPVpz
   const getSpinner = ()=>{return (<span className="ouro">
@@ -80,11 +80,11 @@ function App() {
   }
   return (
 
-    <div className="dark flex canvas max-h-screen">
+    <div className="dark flex canvas max-h-screen max-v-screen w-screen h-screen">
       <div className="w-1/3 ml-10p">
           <Bio/>
       </div>
-      <div className="text-white">
+      <div className="text-white space-x-2 space-y-2">
         {filterButton(filter,"Machine Learning  / AI", "ml")}
         {filterButton(filter,"Frontend Development", "frontend")}
         {filterButton(filter,"Backend Development", "backend")}
