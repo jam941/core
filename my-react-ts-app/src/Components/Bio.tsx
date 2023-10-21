@@ -1,6 +1,3 @@
-import {IonIcon} from '@ionic/react'
-import {logoGithub} from "ionicons/icons"
-
 const github = ()=>{
 
     return (
