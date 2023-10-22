@@ -52,12 +52,12 @@ function Bio(){
         
         <p className="mb-4 text-xl">
             Software Engineer at{' '}  
-            <a href="http://www.wethehobby.com" target="_blank" className="text-blue-300 hover:underline">
+            <a href="https://www.linkedin.com/company/wethehobby/about/" target="_blank" className="text-blue-300 hover:underline">
                 Topshelf Enterprises
             </a>
         </p>
         <p className="mb-4 text-xl">
-            B.S Software Engineering @{' '}  
+            B.S Software Engineering{' '}  
             <a href="https://www.rit.edu/study/software-engineering-bs" target="_blank" className="text-white hover:underline">
                 RIT  {' '}  
             </a>
@@ -66,16 +66,18 @@ function Bio(){
 
         
         <p className="mb-4">
-            Currently building software products revolving around:
+            Currently  building software products revolving around:
             <div>
-            <ul className="list-disc list-inside">
+            <ul className="list-none list-inside">
                 <li className="ml-0 pl-0">Dynamic Broadcast Elements and Tools</li>
                 <li className="ml-0 pl-0">Inventory Management</li>
                 <li className="ml-0 pl-0">Product Creation</li>
                 <li className="ml-0 pl-0">Cost Analysis</li>
                 <li className="ml-0 pl-0">General Reports</li>
             </ul>
+            For Topshelf Enterprises
             </div> 
+            
             
             
         </p>
