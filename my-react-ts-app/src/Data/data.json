@@ -1,0 +1,74 @@
+[
+  {
+    "Type": "Project",
+    "Title": "Software Engineer Intern",
+    "Company": "UKG",
+    "Description": "## Improved data correction tools for developers and testers of UKG Ready by implementing form verification\n## Improved accessibility for keyboard users and screenreader users by improving focus styling for popup components and researching issues with screenreaders reading duplicating some headers \n## Performed user impact research for new features by writing SQL queries to verify how many customers had the required configurations to utilize new authentication features\n## Wrote tests for checklist and document upload components with Jest.",
+    "Skills": "CSS, Java, Javascript, React, SQL, Git, Gitlab, Jira, Kibana",
+    "StartDate": "January 2022",
+    "EndDate": "August 2022",
+    "Brief": "Enhanced UKG Ready's data tools and accessibility, and conducted research and testing for new features.",
+    "Color": "red",
+    "meta": "fullstack frontend backend testing react javascript javac"
+  },
+  {
+    "Type": "Internship",
+    "Title": "Software Engineer Intern",
+    "Company": "Corning Incorporated",
+    "Description": "## Developed process for refactoring machine learning projects using Keras to be run in the cloud via Databricks\n## Wrote documentation to describe how to use Databricks, AWS S3, AWS EC2 instances, and MLFlow\n## Validated process by refactoring an existing classification model to run in Databricks",
+    "Skills": "AWS S3, AWS EC2, MLflow, Keras, Python, Databricks",
+    "StartDate": "May 2021",
+    "EndDate": "August 2021",
+    "Brief": "Developed and validated a process for cloud-based machine learning using Databricks",
+    "Color": "Blue",
+    "meta": "ml cloud python"
+  },
+  {
+    "Type": "Internship",
+    "Title": "Software Engineer Intern",
+    "Company": "Simone Center",
+    "Description": "## Designed and developed a virtual boardgame platform as a full stack Vue.js and Django\n## Trained 3 other engineers how to develop web applications with a Vue.js/Django stack\n## Conducted customer interviews and assisted with business model analysis",
+    "Skills": "Javascript, CSS, HTML, Vue, Django Rest Framework, Git",
+    "StartDate": "August 2020",
+    "EndDate": "December 2020",
+    "Brief": "Designed a virtual boardgame platform using Vue.js and Django, trained engineers, and contributed to business analysis.",
+    "Color": "Blue",
+    "meta": "fullstack frontend backend vue django"
+  },
+  {
+    "Type": "Internship",
+    "Title": "Software Engineer Intern",
+    "Company": "Corning Incorporated",
+    "Description": "##Created a generative adversarial network using the python library Keras to assist with data generation for an on##going confidential project.",
+    "Skills": "Python, Pytorch, Keras, Git",
+    "StartDate": "July 2018",
+    "EndDate": "August 2018",
+    "Brief": "Created a generative adversarial network using the python library Keras to assist with data generation for an on##going confidential project.",
+    "Color": "Blue",
+    "meta": "ml python"
+  },
+  {
+    "Type": "Internship",
+    "Title": "Software Engineer Intern",
+    "Company": "Corning Incorporated",
+    "Description": "##Created a webpage to assist with data driven server policies",
+    "Skills": "Javascript, HTML, CSS, Gitlab",
+    "StartDate": "July 2017",
+    "EndDate": "August 2017",
+    "Brief": "Created a webpage to assist with data driven server policies",
+    "Color": "Blue",
+    "meta": "frontend javascript"
+  },
+  {
+    "Type": "Internship",
+    "Title": "Software Engineer",
+    "Company": "Erway Ambulance",
+    "Description": "## Created a Java command line application to verify if a given employee is omitted from practicing medicine in the United States\n## Refactored the app into a static webpage to provide users with a UI\n## Currently refactoring the app into a React/Express.js application",
+    "Skills": "Java, React, Express, Javascript, HTML, CSS, Git",
+    "StartDate": "Start Date",
+    "EndDate": "End Date",
+    "Brief": "Iterativly developed an application to verify employee identities in a healthcare space",
+    "Color": "Blue",
+    "meta": "frontend javac react express javascript"
+  }
+]

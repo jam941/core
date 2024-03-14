@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import Card from './Components/Card';
-import getJobs from './Services/GetJobs';
+import data from './Data/data.json'
 import { Job } from './Interfaces/CardType';
 import { AxiosResponse } from 'axios';
 import Bio from './Components/Bio';
@@ -15,17 +15,10 @@ function App() {
   
   
 
-  const [jobs,setJobs] = useState([]);
-  const [stringData,setStringData] = useState("")
+  const [jobs,setJobs] = useState(data);
+  const [stringData,setStringData] = useState(JSON.stringify({data}))
 
-  async function  popJobs(){
-     getJobs().then(e=>{
-      var data = e.data.data
-      setJobs(data)
-      var ble = JSON.stringify({data});
-      setStringData(ble)
-     });
-  }
+  
 
   const [filter,setFilter] = useState("");
 
@@ -53,7 +46,7 @@ function App() {
   }
 
   const [start,setStart] = useState(()=>{
-    popJobs();
+    
   })
   
   const filterButton = (testFilter:any, title:string,metaShort:string)=>{
