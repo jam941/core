@@ -7,20 +7,14 @@ import { Job } from './Interfaces/CardType';
 import { AxiosResponse } from 'axios';
 import Bio from './Components/Bio';
 
-
-
-
 function App() {
-  
-  
-  
-
-  const [jobs,setJobs] = useState(data);
-  const [stringData,setStringData] = useState(JSON.stringify({data}));
+  const [jobs, setJobs] = useState<Job[]>(data);
+  const [stringData, setStringData] = useState<string>(JSON.stringify({data}));
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
   const [dynamicFilters, setDynamicFilters] = useState<{[key: string]: {filterValue: string, displayText: string}}>({});
   const [visibleJobs, setVisibleJobs] = useState<{[key: string]: boolean}>({});
   const [animatingJobs, setAnimatingJobs] = useState<{[key: string]: boolean}>({});
+  const [mobileFiltersVisible, setMobileFiltersVisible] = useState(false);
   
   useEffect(() => {
     const initialVisibility: {[key: string]: boolean} = {};
@@ -93,7 +87,6 @@ function App() {
         setAnimatingJobs({});
         
         setVisibleJobs(willBeVisible);
-        setVisibleJobs(willBeVisible);
       }, 300);
     }
   };
@@ -165,10 +158,6 @@ function App() {
       changeFilter(skillLower);
     }
   };
-
-  const [start,setStart] = useState(()=>{
-    
-  })
   
   const filterButton = (title: string, metaShort: string) => {
     const isActive = activeFilters.includes(metaShort);
@@ -178,6 +167,7 @@ function App() {
     
     return (
       <button
+        key={metaShort}
         className={style}
         onClick={() => changeFilter(metaShort)}
       >
@@ -195,44 +185,69 @@ function App() {
     });
   };
 
-  const getSpinner = ()=>{return (<span className="ouro">
-    <span className="left"><span className="anim"></span></span>
-    <span className="right"><span className="anim"></span></span>
-    </span>)
+  const toggleMobileFilters = () => {
+    setMobileFiltersVisible(!mobileFiltersVisible);
+  };
+
+  const getSpinner = () => {
+    return (
+      <span className="ouro">
+        <span className="left"><span className="anim"></span></span>
+        <span className="right"><span className="anim"></span></span>
+      </span>
+    );
   }
-  if(stringData.length == 0){
+
+  if(stringData.length === 0) {
     return getSpinner();
   }
-  return (
 
-    <div className="dark flex flex-col md:flex-row canvas max-h-screen max-v-screen w-screen h-screen min-h-screen bg-fixed bg-cover bg-background p-6">
-      <div className="w-full md:w-2/5 px-6">
-          <Bio/>
+  return (
+    <div className="flex flex-col md:flex-row canvas max-h-screen max-v-screen w-screen h-screen min-h-screen bg-fixed bg-cover bg-background p-4 md:p-6 overflow-hidden">
+      {/* Bio section - Full width on mobile, 2/5 on desktop */}
+      <div className="w-full md:w-2/5 px-2 md:px-6 mb-6 md:mb-0">
+        <Bio/>
       </div>
       
+      {/* Divider - Hidden on mobile */}
       <div className="hidden md:block md:w-1/5 flex items-center justify-center">
         <div className="h-4/5 w-px bg-gradient-to-b from-primary/30 via-primary/10 to-primary/30 opacity-70 mx-auto"></div>
       </div>
       
-      <div className="flex flex-col mt-10 space-y-4 w-full md:w-2/5 canvas px-6">
+      {/* Jobs section - Full width on mobile, 2/5 on desktop */}
+      <div className="flex flex-col w-full md:w-2/5 px-2 md:px-6 overflow-hidden">
+        {/* Mobile filter toggle button */}
+        <button 
+          className="md:hidden mb-4 p-3 bg-card-bg/50 rounded-lg text-white font-medium flex items-center justify-center"
+          onClick={toggleMobileFilters}
+        >
+          <span>{mobileFiltersVisible ? 'Hide Filters' : 'Show Filters'}</span>
+          <svg className={`ml-2 h-5 w-5 transition-transform duration-300 ${mobileFiltersVisible ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+          </svg>
+        </button>
 
-        <div className="text-white space-x-1 space-y-1 hidden md:block bg-card-bg/50 p-4 rounded-xl shadow-inner-glow">
-          {filterButton("Machine Learning / AI", "ml")}
-          {filterButton("Frontend Development", "frontend")}
-          {filterButton("Backend Development", "backend")}
-          {filterButton("Cloud / AWS", "cloud")}
-          {filterButton("Testing", "testing")}
-          {filterButton("Java", "javac")}
-          {filterButton("Javascript / Typescript", "javascript")}
-          {filterButton("Vue", "vue")}
-          {filterButton("React", "react")}
-          {filterButton("Python", "python")}
-          {filterButton("C#", "c#")}
-          {renderDynamicFilterButtons()}
+        {/* Filter buttons - Hidden on mobile unless toggled */}
+        <div className={`text-white space-x-1 space-y-1 bg-card-bg/50 p-4 rounded-xl shadow-inner-glow mb-4 ${mobileFiltersVisible ? 'block' : 'hidden md:block'}`}>
+          <div className="flex flex-wrap gap-2">
+            {filterButton("Machine Learning / AI", "ml")}
+            {filterButton("Frontend Development", "frontend")}
+            {filterButton("Backend Development", "backend")}
+            {filterButton("Cloud / AWS", "cloud")}
+            {filterButton("Testing", "testing")}
+            {filterButton("Java", "javac")}
+            {filterButton("Javascript / Typescript", "javascript")}
+            {filterButton("Vue", "vue")}
+            {filterButton("React", "react")}
+            {filterButton("Python", "python")}
+            {filterButton("C#", "c#")}
+            {renderDynamicFilterButtons()}
+          </div>
         </div>
 
-        <div className="flex-1 pt-1 dark md:overflow-y-auto canvas">
-          <div className="py-5">
+        {/* Jobs list - Scrollable container */}
+        <div className="flex-1 overflow-y-auto pr-2 pb-4 md:pb-0">
+          <div className="py-2">
             {jobs && jobs.map((item, index) => (
               <Card 
                 key={`job-${index}`} 
@@ -245,8 +260,6 @@ function App() {
           </div>
         </div>
       </div>
-      
-      
     </div>
   );
 }
