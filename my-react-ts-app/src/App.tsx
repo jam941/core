@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import Card from './Components/Card';
@@ -15,9 +15,6 @@ function App() {
   const [visibleJobs, setVisibleJobs] = useState<{[key: string]: boolean}>({});
   const [animatingJobs, setAnimatingJobs] = useState<{[key: string]: boolean}>({});
   const [mobileFiltersVisible, setMobileFiltersVisible] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
-  
-  const jobsContainerRef = useRef<HTMLDivElement>(null);
   
   useEffect(() => {
     const initialVisibility: {[key: string]: boolean} = {};
@@ -25,23 +22,6 @@ function App() {
       initialVisibility[`job-${index}`] = true;
     });
     setVisibleJobs(initialVisibility);
-    
-    const handleScroll = () => {
-      if (window.innerWidth < 768) {
-        const scrollPosition = window.scrollY;
-        if (scrollPosition > 50) {
-          setIsScrolled(true);
-        } else {
-          setIsScrolled(false);
-        }
-      }
-    };
-    
-    window.addEventListener('scroll', handleScroll);
-    
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
   }, []);
 
   const changeFilter = (filterValue: string) => {
@@ -222,19 +202,10 @@ function App() {
     return getSpinner();
   }
 
-  // Mobile layout classes that change based on scroll position
-  const bioClasses = `w-full md:w-2/5 px-2 md:px-6 mb-6 md:mb-0 ${
-    isScrolled ? 'md:block hidden' : 'block'
-  } transition-all duration-300`;
-  
-  const jobsClasses = `flex flex-col w-full md:w-2/5 px-2 md:px-6 overflow-hidden ${
-    isScrolled ? 'fixed inset-0 z-10 p-4 bg-background' : ''
-  } transition-all duration-300`;
-
   return (
     <div className="flex flex-col md:flex-row canvas max-h-screen max-v-screen w-screen h-screen min-h-screen bg-fixed bg-cover bg-background p-4 md:p-6 overflow-hidden">
-      {/* Bio section - Full width on mobile, 2/5 on desktop, hidden on scroll on mobile */}
-      <div className={bioClasses}>
+      {/* Bio section - Full width on mobile, 2/5 on desktop */}
+      <div className="w-full md:w-2/5 px-2 md:px-6 mb-6 md:mb-0">
         <Bio/>
       </div>
       
@@ -243,8 +214,8 @@ function App() {
         <div className="h-4/5 w-px bg-gradient-to-b from-primary/30 via-primary/10 to-primary/30 opacity-70 mx-auto"></div>
       </div>
       
-      {/* Jobs section - Full width on mobile, 2/5 on desktop, expands to full screen on scroll */}
-      <div className={jobsClasses}>
+      {/* Jobs section - Full width on mobile, 2/5 on desktop */}
+      <div className="flex flex-col w-full md:w-2/5 px-2 md:px-6 overflow-hidden">
         {/* Mobile filter toggle button */}
         <button 
           className="md:hidden mb-4 p-3 bg-card-bg/50 rounded-lg text-white font-medium flex items-center justify-center"
@@ -275,10 +246,7 @@ function App() {
         </div>
 
         {/* Jobs list - Scrollable container */}
-        <div 
-          ref={jobsContainerRef}
-          className="flex-1 overflow-y-auto pr-2 pb-4 md:pb-0"
-        >
+        <div className="flex-1 overflow-y-auto pr-2 pb-4 md:pb-0">
           <div className="py-2">
             {jobs && jobs.map((item, index) => (
               <Card 
