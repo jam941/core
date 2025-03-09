@@ -37,7 +37,7 @@ const linkedIn = () => {
 
 function Bio() {
     return (
-        <div className="text-white p-6 bg-card-bg rounded-2xl shadow-card mt-10 transform transition-all duration-300 hover:shadow-hover">
+        <div className="text-white p-6 bg-card-bg rounded-2xl shadow-card mt-10 transform transition-all duration-300 hover:shadow-hover w-full">
             <h1 className="text-4xl text-white font-bold mb-4 border-b border-blue-500 pb-2">Jarred Moyer</h1>
             
             <p className="mb-4 text-xl">

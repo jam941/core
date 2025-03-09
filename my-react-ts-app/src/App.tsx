@@ -73,16 +73,18 @@ function App() {
   }
   return (
 
-    <div className="dark flex flex-col md:flex-row canvas max-h-screen max-v-screen w-screen h-screen min-h-screen bg-fixed bg-cover bg-background">
-      <div className="w-1/3 ml-10p">
+    <div className="dark flex flex-col md:flex-row canvas max-h-screen max-v-screen w-screen h-screen min-h-screen bg-fixed bg-cover bg-background p-6">
+      <div className="w-full md:w-2/5 px-6">
           <Bio/>
       </div>
       
-      <div className="w-1/3"></div> {/* Spacer div */}
+      <div className="hidden md:block md:w-1/5 flex items-center justify-center">
+        <div className="h-4/5 w-px bg-gray-700 opacity-30 mx-auto"></div>
+      </div> {/* Subtle divider instead of empty space */}
       
-      <div className="flex flex-col mt-10 space-y-4 w-auto md:w-1/3 canvas">
+      <div className="flex flex-col mt-10 space-y-4 w-full md:w-2/5 canvas px-6">
 
-        <div className="text-white space-x-1 space-y-1 hidden md:block md:mr-10p">
+        <div className="text-white space-x-1 space-y-1 hidden md:block">
           {filterButton(filter,"Machine Learning  / AI", "ml")}
           {filterButton(filter,"Frontend Development", "frontend")}
           {filterButton(filter,"Backend Development", "backend")}
@@ -96,7 +98,7 @@ function App() {
           {filterButton(filter,"C#", "c#")}
         </div>
 
-        <div className="flex-1 pt-1 dark md:overflow-y-auto canvas md:mr-10p">
+        <div className="flex-1 pt-1 dark md:overflow-y-auto canvas">
           <div className="py-5">
             {jobs && jobs.map((item, index) => <Card key={index} data={item} />)}
           </div>
