@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import Card from './Components/Card';
@@ -16,51 +16,117 @@ function App() {
   
 
   const [jobs,setJobs] = useState(data);
-  const [stringData,setStringData] = useState(JSON.stringify({data}))
+  const [stringData,setStringData] = useState(JSON.stringify({data}));
+  const [activeFilters, setActiveFilters] = useState<string[]>([]);
+  const [dynamicFilters, setDynamicFilters] = useState<{[key: string]: {filterValue: string, displayText: string}}>({});
 
   
 
-  const [filter,setFilter] = useState("");
-
-  
-
-  const changeFilter = (e :string)=>{
-
-      if(filter === e){
-        setJobs(JSON.parse(stringData).data)
-        setFilter("")
+  const changeFilter = (filterValue: string) => {
+    
+    if (activeFilters.includes(filterValue)) {
+     
+      const newFilters = activeFilters.filter(f => f !== filterValue);
+      setActiveFilters(newFilters);
+      
+      if (newFilters.length === 0) {
+        setJobs(JSON.parse(stringData).data);
+      } else {
+        filterJobs(newFilters);
       }
-      else{
-        setFilter(e)
-        var tempJobs = JSON.parse(stringData).data;
-         tempJobs = tempJobs.filter((item: any)=>{
-          
-            return item.meta.includes(e)
-          
-          })
-          setJobs(tempJobs)
+    } else {
+      const newFilters = [...activeFilters, filterValue];
+      setActiveFilters(newFilters);
+      filterJobs(newFilters);
+    }
+  };
+
+  const filterJobs = (filters: string[]) => {
+    if (filters.length === 0) {
+      setJobs(JSON.parse(stringData).data);
+      return;
+    }
+
+    const tempJobs = JSON.parse(stringData).data;
+    const filteredJobs = tempJobs.filter((job: Job) => {
+      if (job.meta && filters.some(filter => job.meta?.includes(filter))) {
+        return true;
       }
       
+      if (job.Skills) {
+        const jobSkills = job.Skills.toLowerCase().split(',').map((s: string) => s.trim());
+        if (filters.some(filter => jobSkills.includes(filter.toLowerCase()))) {
+          return true;
+        }
+      }
+      
+      return false;
+    });
     
+    setJobs(filteredJobs);
+  };
 
-  }
+  const predefinedFilters = [
+    "ml", "frontend", "backend", "cloud", "testing", 
+    "javac", "javascript", "vue", "react", "python", "c#"
+  ];
+
+  const handleSkillClick = (skill: string) => {
+    const strictMappings: {[key: string]: string} = {
+      'javascript': 'javascript',
+      'typescript': 'javascript',
+      'react': 'react',
+      'vue': 'vue',
+      'python': 'python',
+      'java': 'javac'
+    };
+
+    const skillLower = skill.toLowerCase();
+
+    if (strictMappings[skillLower]) {
+      changeFilter(strictMappings[skillLower]);
+    } else {
+      if (!dynamicFilters[skillLower]) {
+        setDynamicFilters({
+          ...dynamicFilters,
+          [skillLower]: {
+            filterValue: skillLower,
+            displayText: skill
+          }
+        });
+      }
+      changeFilter(skillLower);
+    }
+  };
 
   const [start,setStart] = useState(()=>{
     
   })
   
-  const filterButton = (testFilter:any, title:string,metaShort:string)=>{
-    var isDisplayed = testFilter===metaShort;
-    var style = "inline-block border border-white p-2 rounded-lg shadow-md text-xs font-semibold tracking-wide "
-    isDisplayed ? style+="bg-buttonOn":style+="bg-transparent text-white"
-    return(
-    <button
-      className={style}
-      onClick={() => changeFilter(metaShort)}
-    >
-      {title}
-    </button>)
-  } 
+  const filterButton = (title: string, metaShort: string) => {
+    const isActive = activeFilters.includes(metaShort);
+    const style = `inline-block border border-white p-2 rounded-lg shadow-md text-xs font-semibold tracking-wide ${
+      isActive ? 'bg-buttonOn' : 'bg-transparent text-white'
+    }`;
+    
+    return (
+      <button
+        className={style}
+        onClick={() => changeFilter(metaShort)}
+      >
+        {title}
+      </button>
+    );
+  };
+
+  const renderDynamicFilterButtons = () => {
+    return Object.entries(dynamicFilters).map(([key, value]) => {
+      if (!predefinedFilters.includes(key)) {
+        return filterButton(value.displayText, value.filterValue);
+      }
+      return null;
+    });
+  };
 
   //Spinner provided by https://codepen.io/GeoffreyCrofte/pen/nPPVpz
   const getSpinner = ()=>{return (<span className="ouro">
@@ -85,22 +151,30 @@ function App() {
       <div className="flex flex-col mt-10 space-y-4 w-full md:w-2/5 canvas px-6">
 
         <div className="text-white space-x-1 space-y-1 hidden md:block">
-          {filterButton(filter,"Machine Learning  / AI", "ml")}
-          {filterButton(filter,"Frontend Development", "frontend")}
-          {filterButton(filter,"Backend Development", "backend")}
-          {filterButton(filter,"Cloud / AWS", "cloud")}
-          {filterButton(filter,"Testing", "testing")}
-          {filterButton(filter,"Java", "javac")}
-          {filterButton(filter,"Javascript / Typescript", "javascript")}
-          {filterButton(filter,"Vue", "vue")}
-          {filterButton(filter,"React", "react")}
-          {filterButton(filter,"Python", "python")}
-          {filterButton(filter,"C#", "c#")}
+          {filterButton("Machine Learning / AI", "ml")}
+          {filterButton("Frontend Development", "frontend")}
+          {filterButton("Backend Development", "backend")}
+          {filterButton("Cloud / AWS", "cloud")}
+          {filterButton("Testing", "testing")}
+          {filterButton("Java", "javac")}
+          {filterButton("Javascript / Typescript", "javascript")}
+          {filterButton("Vue", "vue")}
+          {filterButton("React", "react")}
+          {filterButton("Python", "python")}
+          {filterButton("C#", "c#")}
+          {renderDynamicFilterButtons()}
         </div>
 
         <div className="flex-1 pt-1 dark md:overflow-y-auto canvas">
           <div className="py-5">
-            {jobs && jobs.map((item, index) => <Card key={index} data={item} />)}
+            {jobs && jobs.map((item, index) => (
+              <Card 
+                key={index} 
+                data={item} 
+                onSkillClick={handleSkillClick}
+                activeFilters={activeFilters}
+              />
+            ))}
           </div>
         </div>
       </div>
@@ -108,7 +182,6 @@ function App() {
       
     </div>
   );
-  //<div className="w-1/2 space-y-1 ">
 }
 
 export default App;

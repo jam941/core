@@ -3,6 +3,8 @@ import {Job} from '../Interfaces/CardType';
 
 interface CardProps {
     data: Job;
+    onSkillClick: (skill: string) => void;
+    activeFilters: string[];
 }
 
 function Card(props: CardProps){
@@ -41,6 +43,37 @@ function Card(props: CardProps){
         }
     }
     
+    const handleSkillClick = (skill: string) => {
+        props.onSkillClick(skill);
+    }
+
+    const renderSkills = () => {
+        if (!data.Skills) return null;
+        
+        const skills = data.Skills.split(',').map(skill => skill.trim());
+        
+        return skills.map((skill, index) => {
+            const skillLower = skill.toLowerCase();
+            const isActive = props.activeFilters.some(filter => 
+                filter === skillLower || 
+                (skillLower.includes(' ') && skillLower.split(' ').includes(filter))
+            );
+            
+            return (
+                <button 
+                    key={index}
+                    onClick={() => handleSkillClick(skill)}
+                    className={`mr-2 mb-1 inline-block px-2 py-1 rounded-full text-xs font-semibold tracking-wide border ${
+                        isActive 
+                            ? 'bg-blue-600 text-white border-blue-600' 
+                            : 'text-blue-300 border-blue-500 hover:text-blue-200 hover:border-blue-400'
+                    } transition-colors duration-200`}
+                >
+                    {skill}
+                </button>
+            );
+        });
+    }
 
     return(
         <React.Fragment>
@@ -61,10 +94,12 @@ function Card(props: CardProps){
                 <button className="mt-3 inline-block text-blue-300 hover:text-blue-200 transition-colors duration-200 px-3 py-1 rounded-full text-xs font-semibold tracking-wide border border-blue-500 hover:border-blue-400" onClick={(e)=>toggleDetail(true,e)}>Show Less</button>}
             </div>
             <div className="bg-card-footer p-4">
-                <p className="text-sm text-white">
+                <div className="text-sm text-white">
                     <span className="font-semibold">Skills:</span> 
-                    <span className="ml-2">{data.Skills}</span>
-                </p>
+                    <div className="flex flex-wrap mt-2">
+                        {renderSkills()}
+                    </div>
+                </div>
             </div>
         </div>
         </React.Fragment>

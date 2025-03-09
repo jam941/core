@@ -8,4 +8,5 @@ export interface Job {
     Description: string;
     Skills: string;
     Color: string;
+    meta?: string;
 }
