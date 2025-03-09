@@ -51,7 +51,7 @@ function App() {
   
   const filterButton = (testFilter:any, title:string,metaShort:string)=>{
     var isDisplayed = testFilter===metaShort;
-    var style = "border border-white p-2 rounded-lg shadow-md "
+    var style = "inline-block border border-white p-2 rounded-lg shadow-md text-xs font-semibold tracking-wide "
     isDisplayed ? style+="bg-buttonOn":style+="bg-transparent text-white"
     return(
     <button
@@ -80,9 +80,9 @@ function App() {
       
       <div className="w-1/3"></div> {/* Spacer div */}
       
-      <div className="flex flex-col mt-10 space-y-10 w-auto md:w-1/3 canvas">
+      <div className="flex flex-col mt-10 space-y-4 w-auto md:w-1/3 canvas">
 
-        <div className="h-1/8  text-white space-x-1 space-y-1 hidden md:block">
+        <div className="text-white space-x-1 space-y-1 hidden md:block md:mr-10p">
           {filterButton(filter,"Machine Learning  / AI", "ml")}
           {filterButton(filter,"Frontend Development", "frontend")}
           {filterButton(filter,"Backend Development", "backend")}
@@ -96,13 +96,10 @@ function App() {
           {filterButton(filter,"C#", "c#")}
         </div>
 
-        <div className="h-2/3 flex-1 pt-1 dark mr-10p md:overflow-y-auto canvas">
-          <div className="py-5 px-10p">
+        <div className="flex-1 pt-1 dark md:overflow-y-auto canvas md:mr-10p">
+          <div className="py-5">
             {jobs && jobs.map((item, index) => <Card key={index} data={item} />)}
           </div>
-        </div>
-        <div className="md:h-1/8">
-
         </div>
       </div>
       
