@@ -1,6 +1,6 @@
 [
   {
-    "Type": "Project",
+    "Type": "Internship",
     "Title": "Software Engineer Intern",
     "Company": "UKG",
     "Description": "## Improved data correction tools for developers and testers of UKG Ready by implementing form verification\n## Improved accessibility for keyboard users and screenreader users by improving focus styling for popup components and researching issues with screenreaders reading duplicating some headers \n## Performed user impact research for new features by writing SQL queries to verify how many customers had the required configurations to utilize new authentication features\n## Wrote tests for checklist and document upload components with Jest.",
@@ -8,7 +8,7 @@
     "StartDate": "January 2022",
     "EndDate": "August 2022",
     "Brief": "Enhanced UKG Ready's data tools and accessibility, and conducted research and testing for new features.",
-    "Color": "red",
+    "Color": "blue",
     "meta": "fullstack frontend backend testing react javascript javac"
   },
   {
@@ -63,10 +63,10 @@
     "Type": "Internship",
     "Title": "Software Engineer",
     "Company": "Erway Ambulance",
-    "Description": "## Created a Java command line application to verify if a given employee is omitted from practicing medicine in the United States\n## Refactored the app into a static webpage to provide users with a UI\n## Currently refactoring the app into a React/Express.js application",
+    "Description": "## Created a Java command line application to verify if a given employee is omitted from practicing medicine inthe United States\n## Refactored the app into a static webpage to provide users with a UI\n## Currently refactoring the app into a React/Express.js application",
     "Skills": "Java, React, Express, Javascript, HTML, CSS, Git",
-    "StartDate": "Start Date",
-    "EndDate": "End Date",
+    "StartDate": "January 2019",
+    "EndDate": "December 2022",
     "Brief": "Iterativly developed an application to verify employee identities in a healthcare space",
     "Color": "Blue",
     "meta": "frontend javac react express javascript"
