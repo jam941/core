@@ -56,30 +56,10 @@ function Bio() {
             
             <div className="mb-6 bg-card-header p-4 rounded-xl">
                 <p className="mb-2 font-semibold">
-                    Currently building software products revolving around:
+                    Currently building internal and broadcast tools for WeTheHobby
+                    
                 </p>
-                <ul className="list-none space-y-1">
-                    <li className="ml-0 pl-0 flex items-center">
-                        <span className="text-blue-400 mr-2">•</span>
-                        <span>Dynamic Broadcast Elements and Tools</span>
-                    </li>
-                    <li className="ml-0 pl-0 flex items-center">
-                        <span className="text-blue-400 mr-2">•</span>
-                        <span>Inventory Management</span>
-                    </li>
-                    <li className="ml-0 pl-0 flex items-center">
-                        <span className="text-blue-400 mr-2">•</span>
-                        <span>Product Creation</span>
-                    </li>
-                    <li className="ml-0 pl-0 flex items-center">
-                        <span className="text-blue-400 mr-2">•</span>
-                        <span>Cost Analysis</span>
-                    </li>
-                    <li className="ml-0 pl-0 flex items-center">
-                        <span className="text-blue-400 mr-2">•</span>
-                        <span>General Reports</span>
-                    </li>
-                </ul>
+                
             </div>
             
             <div className="flex space-x-4 text-white mt-4">
