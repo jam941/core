@@ -172,8 +172,8 @@ function App() {
   
   const filterButton = (title: string, metaShort: string) => {
     const isActive = activeFilters.includes(metaShort);
-    const style = `inline-block border border-white p-2 rounded-lg shadow-md text-xs font-semibold tracking-wide ${
-      isActive ? 'bg-buttonOn' : 'bg-transparent text-white'
+    const style = `filter-button inline-block border border-primary-light p-2 rounded-lg shadow-button text-xs font-semibold tracking-wide ${
+      isActive ? 'filter-button-active text-white' : 'bg-transparent text-white hover:text-primary-light'
     } transition-all duration-300`;
     
     return (
@@ -195,7 +195,6 @@ function App() {
     });
   };
 
-  //Spinner provided by https://codepen.io/GeoffreyCrofte/pen/nPPVpz
   const getSpinner = ()=>{return (<span className="ouro">
     <span className="left"><span className="anim"></span></span>
     <span className="right"><span className="anim"></span></span>
@@ -212,12 +211,12 @@ function App() {
       </div>
       
       <div className="hidden md:block md:w-1/5 flex items-center justify-center">
-        <div className="h-4/5 w-px bg-gray-700 opacity-30 mx-auto"></div>
-      </div> {/* Subtle divider instead of empty space */}
+        <div className="h-4/5 w-px bg-gradient-to-b from-primary/30 via-primary/10 to-primary/30 opacity-70 mx-auto"></div>
+      </div>
       
       <div className="flex flex-col mt-10 space-y-4 w-full md:w-2/5 canvas px-6">
 
-        <div className="text-white space-x-1 space-y-1 hidden md:block">
+        <div className="text-white space-x-1 space-y-1 hidden md:block bg-card-bg/50 p-4 rounded-xl shadow-inner-glow">
           {filterButton("Machine Learning / AI", "ml")}
           {filterButton("Frontend Development", "frontend")}
           {filterButton("Backend Development", "backend")}
