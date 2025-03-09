@@ -1,15 +1,26 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {Job} from '../Interfaces/CardType';
 
 interface CardProps {
     data: Job;
     onSkillClick: (skill: string) => void;
     activeFilters: string[];
+    isAnimatingOut?: boolean;
 }
 
 function Card(props: CardProps){
 
     const [isOpen,setOpen] = useState(true);
+    const [isVisible, setIsVisible] = useState(true);
+    const [animationClass, setAnimationClass] = useState('card-animation');
+
+    useEffect(() => {
+        if (props.isAnimatingOut) {
+            setAnimationClass('card-animation card-exit');
+        } else {
+            setAnimationClass('card-animation card-enter');
+        }
+    }, [props.isAnimatingOut]);
 
     var data = props.data;
     
@@ -77,7 +88,9 @@ function Card(props: CardProps){
 
     return(
         <React.Fragment>
-        <div className={`dark border-l-4 ${getColor()} mt-4 w-full mx-auto bg-card-bg rounded-2xl shadow-card hover:shadow-hover transform hover:-translate-y-1 transition-all duration-300 overflow-hidden md:max-w-2xl`}>
+        <div 
+            className={`${animationClass} dark border-l-4 ${getColor()} mt-4 w-full mx-auto bg-card-bg rounded-2xl shadow-card hover:shadow-hover transform hover:-translate-y-1 transition-all duration-300 overflow-hidden md:max-w-2xl`}
+        >
             <div className="bg-card-header p-4 flex items-center justify-between space-x-4">
                 <p className="text-sm text-white font-bold">{data.Type}</p>
                 <p className="text-sm text-white font-bold">{data.Company}</p>

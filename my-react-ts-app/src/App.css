@@ -24,6 +24,51 @@
   background: #555;
 }
 
+/* Card animations */
+.card-animation {
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.card-enter {
+  animation: card-fade-in 0.3s ease-in-out;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.card-exit {
+  animation: card-fade-out 0.3s ease-in-out forwards;
+}
+
+@keyframes card-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes card-fade-out {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+}
+
+button {
+  transition: all 0.3s ease;
+}
+
+button:active {
+  transform: scale(0.95);
+}
+
 .ouro {
   position: relative;
   display:inline-block;

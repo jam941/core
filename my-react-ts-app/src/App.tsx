@@ -19,26 +19,106 @@ function App() {
   const [stringData,setStringData] = useState(JSON.stringify({data}));
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
   const [dynamicFilters, setDynamicFilters] = useState<{[key: string]: {filterValue: string, displayText: string}}>({});
-
+  const [visibleJobs, setVisibleJobs] = useState<{[key: string]: boolean}>({});
+  const [animatingJobs, setAnimatingJobs] = useState<{[key: string]: boolean}>({});
   
+  useEffect(() => {
+    const initialVisibility: {[key: string]: boolean} = {};
+    jobs.forEach((job, index) => {
+      initialVisibility[`job-${index}`] = true;
+    });
+    setVisibleJobs(initialVisibility);
+  }, []);
 
   const changeFilter = (filterValue: string) => {
     
     if (activeFilters.includes(filterValue)) {
-     
       const newFilters = activeFilters.filter(f => f !== filterValue);
       setActiveFilters(newFilters);
       
-      if (newFilters.length === 0) {
-        setJobs(JSON.parse(stringData).data);
-      } else {
-        filterJobs(newFilters);
-      }
+      const tempJobs = JSON.parse(stringData).data;
+      const newFilteredJobs = newFilters.length === 0 
+        ? tempJobs 
+        : tempJobs.filter((job: Job) => jobMatchesFilters(job, newFilters));
+      
+      const willBeVisible: {[key: string]: boolean} = {};
+      newFilteredJobs.forEach((job: Job, index: number) => {
+        willBeVisible[`job-${index}`] = true;
+      });
+      
+      const animating: {[key: string]: boolean} = {};
+      jobs.forEach((job, index) => {
+        if (!willBeVisible[`job-${index}`] && visibleJobs[`job-${index}`]) {
+          animating[`job-${index}`] = true;
+        }
+      });
+      
+      setAnimatingJobs(animating);
+      
+      setTimeout(() => {
+        if (newFilters.length === 0) {
+          setJobs(JSON.parse(stringData).data);
+        } else {
+          filterJobs(newFilters);
+        }
+        setAnimatingJobs({});
+        
+        setVisibleJobs(willBeVisible);
+      }, 300);
+      
     } else {
       const newFilters = [...activeFilters, filterValue];
       setActiveFilters(newFilters);
-      filterJobs(newFilters);
+      
+      const tempJobs = JSON.parse(stringData).data;
+      const newFilteredJobs = tempJobs.filter((job: Job) => jobMatchesFilters(job, newFilters));
+      
+      const willBeVisible: {[key: string]: boolean} = {};
+      newFilteredJobs.forEach((job: Job, index: number) => {
+        const jobId = findJobIndex(job, tempJobs);
+        willBeVisible[`job-${jobId}`] = true;
+      });
+      
+      const animating: {[key: string]: boolean} = {};
+      jobs.forEach((job, index) => {
+        if (!willBeVisible[`job-${index}`] && visibleJobs[`job-${index}`]) {
+          animating[`job-${index}`] = true;
+        }
+      });
+      
+      setAnimatingJobs(animating);
+      
+      setTimeout(() => {
+        filterJobs(newFilters);
+        setAnimatingJobs({});
+        
+        setVisibleJobs(willBeVisible);
+        setVisibleJobs(willBeVisible);
+      }, 300);
     }
+  };
+
+  const findJobIndex = (job: Job, allJobs: Job[]): number => {
+    return allJobs.findIndex(j => 
+      j.Title === job.Title && 
+      j.Company === job.Company && 
+      j.StartDate === job.StartDate
+    );
+  };
+
+  const jobMatchesFilters = (job: Job, filters: string[]): boolean => {
+    if (job.meta && filters.some(filter => job.meta?.includes(filter))) {
+      return true;
+    }
+    
+    if (job.Skills) {
+      const jobSkills = job.Skills.toLowerCase().split(',').map((s: string) => s.trim());
+      if (filters.some(filter => jobSkills.includes(filter.toLowerCase()))) {
+        return true;
+      }
+    }
+    
+    return false;
   };
 
   const filterJobs = (filters: string[]) => {
@@ -48,20 +128,7 @@ function App() {
     }
 
     const tempJobs = JSON.parse(stringData).data;
-    const filteredJobs = tempJobs.filter((job: Job) => {
-      if (job.meta && filters.some(filter => job.meta?.includes(filter))) {
-        return true;
-      }
-      
-      if (job.Skills) {
-        const jobSkills = job.Skills.toLowerCase().split(',').map((s: string) => s.trim());
-        if (filters.some(filter => jobSkills.includes(filter.toLowerCase()))) {
-          return true;
-        }
-      }
-      
-      return false;
-    });
+    const filteredJobs = tempJobs.filter((job: Job) => jobMatchesFilters(job, filters));
     
     setJobs(filteredJobs);
   };
@@ -107,7 +174,7 @@ function App() {
     const isActive = activeFilters.includes(metaShort);
     const style = `inline-block border border-white p-2 rounded-lg shadow-md text-xs font-semibold tracking-wide ${
       isActive ? 'bg-buttonOn' : 'bg-transparent text-white'
-    }`;
+    } transition-all duration-300`;
     
     return (
       <button
@@ -169,10 +236,11 @@ function App() {
           <div className="py-5">
             {jobs && jobs.map((item, index) => (
               <Card 
-                key={index} 
+                key={`job-${index}`} 
                 data={item} 
                 onSkillClick={handleSkillClick}
                 activeFilters={activeFilters}
+                isAnimatingOut={animatingJobs[`job-${index}`] || false}
               />
             ))}
           </div>
