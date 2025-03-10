@@ -12,7 +12,28 @@ body {
   background-color: #1a1e24;
   color: #fcfdfc;
 }
+
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  color: #fcfdfc !important;
+}
+
+.text-white {
+  color: #fcfdfc !important;
+}
+
+.text-primary {
+  color: #3B82F6 !important;
+}
+
+.text-primary-light {
+  color: #60A5FA !important;
+}
+
+a:hover.text-primary-light {
+  color: #60A5FA !important;
 }

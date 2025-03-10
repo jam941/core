@@ -38,17 +38,17 @@ const linkedIn = () => {
 function Bio() {
     return (
         <div className="text-white p-4 md:p-6 bg-gradient-to-br from-card-bg to-card-bg/90 rounded-2xl shadow-card mt-4 md:mt-10 transform transition-all duration-300 hover:shadow-hover w-full border-t border-primary/20">
-            <h1 className="text-2xl md:text-4xl text-white font-bold mb-2 md:mb-4 border-b border-primary pb-2 inline-block">Jarred Moyer</h1>
+            <h1 className="text-2xl md:text-4xl text-white font-bold mb-2 md:mb-4 border-b border-primary pb-2 inline-block" style={{color: 'white'}}>Jarred Moyer</h1>
             
             <p className="mb-2 md:mb-4 text-lg md:text-xl">
                 Software Engineer at{' '}  
-                <a href="https://www.linkedin.com/company/wethehobby/about/" target="_blank" className="text-primary hover:text-primary-light transition-colors duration-200">
+                <a href="https://www.linkedin.com/company/wethehobby/about/" target="_blank" className="text-primary hover:text-primary-light transition-colors duration-200" style={{color: '#3B82F6'}}>
                     WeTheHobby
                 </a>
             </p>
             <p className="mb-4 md:mb-6 text-lg md:text-xl">
                 B.S Software Engineering{' '}  
-                <a href="https://www.rit.edu/study/software-engineering-bs" target="_blank" className="text-white hover:text-primary-light transition-colors duration-200">
+                <a href="https://www.rit.edu/study/software-engineering-bs" target="_blank" className="text-white hover:text-primary-light transition-colors duration-200" style={{color: 'white'}}>
                     RIT  {' '}  
                 </a>
                 2023
