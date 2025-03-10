@@ -1,11 +1,13 @@
+
+'use client';
+
 import React, { useState, useEffect } from 'react';
 import logo from './logo.svg';
-import './App.css';
-import Card from './Components/Card';
-import data from './Data/data.json'
-import { Job } from './Interfaces/CardType';
-import { AxiosResponse } from 'axios';
-import Bio from './Components/Bio';
+import '../styles/App.css';
+import { Job } from '../Interfaces/CardType'; 
+import data from '../Data/data.json'
+import Bio from './Bio';
+import Card from './Card';
 
 function App() {
   const [jobs, setJobs] = useState<Job[]>(data);
