@@ -127,6 +127,7 @@ const Card = ({ data, onSkillClick, activeFilters, isAnimatingOut }: CardProps) 
                 <button 
                     className="filter-button mt-3 inline-block text-primary-light hover:text-white transition-colors duration-200 px-3 py-1 rounded-full text-xs font-semibold tracking-wide border border-primary-light hover:border-primary shadow-button hover:shadow-button-hover" 
                     onClick={(e) => toggleDetail(!isOpen, e)}
+                    style={{color: '#60A5FA'}}
                 >
                     {isOpen ? 'Show More' : 'Show Less'}
                 </button>
