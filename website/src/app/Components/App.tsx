@@ -223,7 +223,7 @@ function App() {
     );
   }
 
-  const isMobile = windowWidth < 768;
+  const isMobile = windowWidth < 1024;
   
   if(stringData.length === 0) {
     return getSpinner();
