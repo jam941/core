@@ -1,20 +1,20 @@
+
+'use client';
+
 import React, { useState, useEffect } from 'react';
-import logo from './logo.svg';
-import './App.css';
-import Card from './Components/Card';
-import data from './Data/data.json'
-import { Job } from './Interfaces/CardType';
-import { AxiosResponse } from 'axios';
-import Bio from './Components/Bio';
+import '../styles/App.css';
+import { Job } from '../Interfaces/CardType'; 
+import data from '../Data/data.json'
+import Bio from './Bio';
+import Card from './Card';
 
 function App() {
   const [jobs, setJobs] = useState<Job[]>(data);
-  const [stringData, setStringData] = useState<string>(JSON.stringify({data}));
+  const [stringData] = useState<string>(JSON.stringify({data}));
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
   const [dynamicFilters, setDynamicFilters] = useState<{[key: string]: {filterValue: string, displayText: string}}>({});
   const [visibleJobs, setVisibleJobs] = useState<{[key: string]: boolean}>({});
   const [animatingJobs, setAnimatingJobs] = useState<{[key: string]: boolean}>({});
-  const [mobileFiltersVisible, setMobileFiltersVisible] = useState(false);
   
   useEffect(() => {
     const initialVisibility: {[key: string]: boolean} = {};
@@ -68,7 +68,7 @@ function App() {
       const newFilteredJobs = tempJobs.filter((job: Job) => jobMatchesFilters(job, newFilters));
       
       const willBeVisible: {[key: string]: boolean} = {};
-      newFilteredJobs.forEach((job: Job, index: number) => {
+      newFilteredJobs.forEach((job: Job) => {
         const jobId = findJobIndex(job, tempJobs);
         willBeVisible[`job-${jobId}`] = true;
       });
@@ -161,14 +161,27 @@ function App() {
   
   const filterButton = (title: string, metaShort: string) => {
     const isActive = activeFilters.includes(metaShort);
-    const style = `filter-button inline-block border border-primary-light p-2 rounded-lg shadow-button text-xs font-semibold tracking-wide ${
-      isActive ? 'filter-button-active text-white' : 'bg-transparent text-white hover:text-primary-light'
-    } transition-all duration-300`;
+    
+    const buttonStyle = {
+      display: 'inline-block',
+      border: '1px solid #60A5FA',
+      padding: '8px',
+      borderRadius: '8px',
+      boxShadow: '0 1px 3px 0 rgba(59, 130, 246, 0.1), 0 1px 2px 0 rgba(59, 130, 246, 0.06)',
+      fontSize: '12px',
+      fontWeight: 600,
+      letterSpacing: '0.05em',
+      color: isActive ? 'white' : 'white',
+      background: isActive ? 'linear-gradient(135deg, #3B82F6, #2563EB)' : 'transparent',
+      transition: 'all 0.3s',
+      margin: '4px',
+      cursor: 'pointer'
+    };
     
     return (
       <button
         key={metaShort}
-        className={style}
+        style={buttonStyle}
         onClick={() => changeFilter(metaShort)}
       >
         {title}
@@ -185,10 +198,6 @@ function App() {
     });
   };
 
-  const toggleMobileFilters = () => {
-    setMobileFiltersVisible(!mobileFiltersVisible);
-  };
-
   const getSpinner = () => {
     return (
       <span className="ouro">
@@ -203,33 +212,50 @@ function App() {
   }
 
   return (
-    <div className="flex flex-col md:flex-row canvas max-h-screen max-v-screen w-screen h-screen min-h-screen bg-fixed bg-cover bg-background p-4 md:p-6 overflow-hidden">
-      {/* Bio section - Full width on mobile, 2/5 on desktop */}
-      <div className="w-full md:w-2/5 px-2 md:px-6 mb-6 md:mb-0">
+    <div style={{ 
+      display: 'flex', 
+      flexDirection: 'row', 
+      width: '100%', 
+      height: '100vh', 
+      overflow: 'hidden', 
+      overflowX: 'hidden', 
+      backgroundColor: '#1a1e24', 
+      padding: '0', 
+      boxSizing: 'border-box' 
+    }}>
+      {/* Left 5% margin */}
+      <div style={{ width: '5%' }}></div>
+      
+      {/* Bio section - 40% */}
+      <div style={{ width: '40%' }}>
         <Bio/>
       </div>
       
-      {/* Divider - Hidden on mobile */}
-      <div className="hidden md:block md:w-1/5 flex items-center justify-center">
-        <div className="h-4/5 w-px bg-gradient-to-b from-primary/30 via-primary/10 to-primary/30 opacity-70 mx-auto"></div>
+      {/* Middle 10% with centered divider */}
+      <div style={{ 
+        width: '10%', 
+        display: 'flex', 
+        alignItems: 'center', 
+        justifyContent: 'center' 
+      }}>
+        <div style={{ 
+          height: '90%', 
+          width: '1px', 
+          background: 'linear-gradient(to bottom, rgba(59, 130, 246, 0.4), rgba(59, 130, 246, 0.15), rgba(59, 130, 246, 0.4))', 
+          opacity: 0.8 
+        }}></div>
       </div>
       
-      {/* Jobs section - Full width on mobile, 2/5 on desktop */}
-      <div className="flex flex-col w-full md:w-2/5 px-2 md:px-6 overflow-hidden">
-        {/* Mobile filter toggle button */}
-        <button 
-          className="md:hidden mb-4 p-3 bg-card-bg/50 rounded-lg text-white font-medium flex items-center justify-center"
-          onClick={toggleMobileFilters}
-        >
-          <span>{mobileFiltersVisible ? 'Hide Filters' : 'Show Filters'}</span>
-          <svg className={`ml-2 h-5 w-5 transition-transform duration-300 ${mobileFiltersVisible ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-          </svg>
-        </button>
-
-        {/* Filter buttons - Hidden on mobile unless toggled */}
-        <div className={`text-white space-x-1 space-y-1 bg-card-bg/50 p-4 rounded-xl shadow-inner-glow mb-4 ${mobileFiltersVisible ? 'block' : 'hidden md:block'}`}>
-          <div className="flex flex-wrap gap-2">
+      {/* Jobs section - 40% */}
+      <div style={{ 
+        display: 'flex', 
+        flexDirection: 'column', 
+        width: '40%', 
+        overflowX: 'hidden' 
+      }}>
+        {/* Filter buttons section */}
+        <div style={{ color: 'white', backgroundColor: 'rgba(30, 33, 39, 0.5)', padding: '16px', borderRadius: '12px', marginBottom: '16px', boxShadow: 'inset 0 2px 4px 0 rgba(59, 130, 246, 0.06)', maxWidth: '100%', overflowX: 'hidden' }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
             {filterButton("Machine Learning / AI", "ml")}
             {filterButton("Frontend Development", "frontend")}
             {filterButton("Backend Development", "backend")}
@@ -246,8 +272,15 @@ function App() {
         </div>
 
         {/* Jobs list - Scrollable container */}
-        <div className="flex-1 overflow-y-auto pr-2 pb-4 md:pb-0">
-          <div className="py-2">
+        <div style={{ 
+          flex: 1, 
+          overflowY: 'auto', 
+          overflowX: 'hidden',
+          paddingRight: '8px', 
+          paddingBottom: '16px',
+          maxHeight: 'calc(100vh - 150px)' // Adjust this value based on the height of your filter buttons
+        }}>
+          <div style={{ padding: '8px 0' }}>
             {jobs && jobs.map((item, index) => (
               <Card 
                 key={`job-${index}`} 
@@ -260,6 +293,9 @@ function App() {
           </div>
         </div>
       </div>
+      
+      {/* Right 5% margin */}
+      <div style={{ width: '5%' }}></div>
     </div>
   );
 }
