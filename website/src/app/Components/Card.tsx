@@ -42,10 +42,8 @@ const Card = ({ data, onSkillClick, activeFilters, isAnimatingOut }: CardProps) 
         }
     };
 
-    const animationClass = isAnimatingOut ? 'card-exit' : 'card-enter';
-
     const getDescList = () => {
-        var desc = data.Description.split("##").slice(1);
+        const desc = data.Description.split("##").slice(1);
         return (
             <ul style={{ 
                 listStyleType: 'disc', 
@@ -137,7 +135,7 @@ const Card = ({ data, onSkillClick, activeFilters, isAnimatingOut }: CardProps) 
             transform: 'translateY(0)',
             transition: 'all 0.3s',
             overflow: 'hidden',
-            borderLeft: '4px solid #3B82F6',
+            borderLeft: `4px solid ${getColor().startsWith('border-') ? getColor().replace('border-', '') : '#3B82F6'}`,
             animation: isAnimatingOut ? 'card-fade-out 0.4s forwards' : 'card-fade-in 0.5s'
         }}>
             {/* Card header */}

@@ -2,7 +2,6 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import logo from './logo.svg';
 import '../styles/App.css';
 import { Job } from '../Interfaces/CardType'; 
 import data from '../Data/data.json'
@@ -11,12 +10,11 @@ import Card from './Card';
 
 function App() {
   const [jobs, setJobs] = useState<Job[]>(data);
-  const [stringData, setStringData] = useState<string>(JSON.stringify({data}));
+  const [stringData] = useState<string>(JSON.stringify({data}));
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
   const [dynamicFilters, setDynamicFilters] = useState<{[key: string]: {filterValue: string, displayText: string}}>({});
   const [visibleJobs, setVisibleJobs] = useState<{[key: string]: boolean}>({});
   const [animatingJobs, setAnimatingJobs] = useState<{[key: string]: boolean}>({});
-  const [mobileFiltersVisible, setMobileFiltersVisible] = useState(false);
   
   useEffect(() => {
     const initialVisibility: {[key: string]: boolean} = {};
@@ -70,7 +68,7 @@ function App() {
       const newFilteredJobs = tempJobs.filter((job: Job) => jobMatchesFilters(job, newFilters));
       
       const willBeVisible: {[key: string]: boolean} = {};
-      newFilteredJobs.forEach((job: Job, index: number) => {
+      newFilteredJobs.forEach((job: Job) => {
         const jobId = findJobIndex(job, tempJobs);
         willBeVisible[`job-${jobId}`] = true;
       });
@@ -198,10 +196,6 @@ function App() {
       }
       return null;
     });
-  };
-
-  const toggleMobileFilters = () => {
-    setMobileFiltersVisible(!mobileFiltersVisible);
   };
 
   const getSpinner = () => {
