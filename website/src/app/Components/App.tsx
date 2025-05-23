@@ -15,6 +15,7 @@ function App() {
   const [dynamicFilters, setDynamicFilters] = useState<{[key: string]: {filterValue: string, displayText: string}}>({});
   const [visibleJobs, setVisibleJobs] = useState<{[key: string]: boolean}>({});
   const [animatingJobs, setAnimatingJobs] = useState<{[key: string]: boolean}>({});
+  const [windowWidth, setWindowWidth] = useState<number>(typeof window !== 'undefined' ? window.innerWidth : 1200);
   
   useEffect(() => {
     const initialVisibility: {[key: string]: boolean} = {};
@@ -211,47 +212,73 @@ function App() {
     return getSpinner();
   }
 
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const handleResize = () => {
+        setWindowWidth(window.innerWidth);
+      };
+      
+      window.addEventListener('resize', handleResize);
+      handleResize(); // Set initial size
+      
+      return () => {
+        window.removeEventListener('resize', handleResize);
+      };
+    }
+  }, []);
+  
+  const isMobile = windowWidth < 768;
+  
   return (
     <div style={{ 
       display: 'flex', 
-      flexDirection: 'row', 
+      flexDirection: isMobile ? 'column' : 'row', 
       width: '100%', 
-      height: '100vh', 
-      overflow: 'hidden', 
+      height: isMobile ? 'auto' : '100vh', 
+      overflow: isMobile ? 'auto' : 'hidden', 
       overflowX: 'hidden', 
       backgroundColor: '#1a1e24', 
       padding: '0', 
       boxSizing: 'border-box' 
     }}>
-      {/* Left 5% margin */}
-      <div style={{ width: '5%' }}></div>
+      {/* Left/Top margin */}
+      <div style={{ width: isMobile ? '100%' : '5%', height: isMobile ? '20px' : 'auto' }}></div>
       
-      {/* Bio section - 40% */}
-      <div style={{ width: '40%' }}>
+      {/* Bio section */}
+      <div style={{
+        width: isMobile ? '90%' : '40%',
+        margin: isMobile ? '0 auto' : '0',
+        marginBottom: isMobile ? '20px' : '0'
+      }}>
         <Bio/>
       </div>
       
-      {/* Middle 10% with centered divider */}
-      <div style={{ 
-        width: '10%', 
-        display: 'flex', 
-        alignItems: 'center', 
-        justifyContent: 'center' 
+      {/* Divider - horizontal for mobile, vertical for desktop */}
+      <div style={{
+        width: isMobile ? '90%' : '10%',
+        height: isMobile ? 'auto' : 'auto',
+        margin: isMobile ? '10px auto' : '0',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center'
       }}>
-        <div style={{ 
-          height: '90%', 
-          width: '1px', 
-          background: 'linear-gradient(to bottom, rgba(59, 130, 246, 0.4), rgba(59, 130, 246, 0.15), rgba(59, 130, 246, 0.4))', 
-          opacity: 0.8 
+        <div style={{
+          height: isMobile ? '1px' : '90%',
+          width: isMobile ? '100%' : '1px',
+          background: isMobile
+            ? 'linear-gradient(to right, rgba(59, 130, 246, 0.4), rgba(59, 130, 246, 0.15), rgba(59, 130, 246, 0.4))'
+            : 'linear-gradient(to bottom, rgba(59, 130, 246, 0.4), rgba(59, 130, 246, 0.15), rgba(59, 130, 246, 0.4))',
+          opacity: 0.8
         }}></div>
       </div>
       
-      {/* Jobs section - 40% */}
-      <div style={{ 
-        display: 'flex', 
-        flexDirection: 'column', 
-        width: '40%', 
-        overflowX: 'hidden' 
+      {/* Jobs section */}
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        width: isMobile ? '90%' : '40%',
+        margin: isMobile ? '0 auto' : '0',
+        overflowX: 'hidden'
       }}>
         {/* Filter buttons section */}
         <div style={{ color: 'white', backgroundColor: 'rgba(30, 33, 39, 0.5)', padding: '16px', borderRadius: '12px', marginBottom: '16px', boxShadow: 'inset 0 2px 4px 0 rgba(59, 130, 246, 0.06)', maxWidth: '100%', overflowX: 'hidden' }}>
@@ -278,7 +305,7 @@ function App() {
           overflowX: 'hidden',
           paddingRight: '8px', 
           paddingBottom: '16px',
-          maxHeight: 'calc(100vh - 150px)' // Adjust this value based on the height of your filter buttons
+          maxHeight: isMobile ? 'auto' : 'calc(100vh - 150px)' 
         }}>
           <div style={{ padding: '8px 0' }}>
             {jobs && jobs.map((item, index) => (
@@ -294,8 +321,8 @@ function App() {
         </div>
       </div>
       
-      {/* Right 5% margin */}
-      <div style={{ width: '5%' }}></div>
+      {/* Right/Bottom margin */}
+      <div style={{ width: isMobile ? '100%' : '5%', height: isMobile ? '20px' : 'auto' }}></div>
     </div>
   );
 }
