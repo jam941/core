@@ -18,12 +18,27 @@ function App() {
   const [windowWidth, setWindowWidth] = useState<number>(typeof window !== 'undefined' ? window.innerWidth : 1200);
   
   useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const handleResize = () => {
+        setWindowWidth(window.innerWidth);
+      };
+      
+      window.addEventListener('resize', handleResize);
+      handleResize(); 
+      
+      return () => {
+        window.removeEventListener('resize', handleResize);
+      };
+    }
+  }, []);
+
+  useEffect(() => {
     const initialVisibility: {[key: string]: boolean} = {};
     jobs.forEach((job, index) => {
       initialVisibility[`job-${index}`] = true;
     });
     setVisibleJobs(initialVisibility);
-  }, []);
+  }, [jobs]);
 
   const changeFilter = (filterValue: string) => {
     
@@ -208,27 +223,12 @@ function App() {
     );
   }
 
+  const isMobile = windowWidth < 768;
+  
   if(stringData.length === 0) {
     return getSpinner();
   }
 
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const handleResize = () => {
-        setWindowWidth(window.innerWidth);
-      };
-      
-      window.addEventListener('resize', handleResize);
-      handleResize(); // Set initial size
-      
-      return () => {
-        window.removeEventListener('resize', handleResize);
-      };
-    }
-  }, []);
-  
-  const isMobile = windowWidth < 768;
-  
   return (
     <div style={{ 
       display: 'flex', 
