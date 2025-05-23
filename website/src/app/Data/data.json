@@ -1,7 +1,7 @@
 [
   {
     "Type": "Internship",
-    "Title": "Software Engineer Intern",
+    "Title": "Software Engineer",
     "Company": "UKG",
     "Description": "## Improved data correction tools for developers and testers of UKG Ready by implementing form verification\n## Improved accessibility for keyboard users and screenreader users by improving focus styling for popup components and researching issues with screenreaders reading duplicating some headers \n## Performed user impact research for new features by writing SQL queries to verify how many customers had the required configurations to utilize new authentication features\n## Wrote tests for checklist and document upload components with Jest.",
     "Skills": "CSS, Java, Javascript, React, SQL, Git, Gitlab, Jira, Kibana",
@@ -13,7 +13,7 @@
   },
   {
     "Type": "Internship",
-    "Title": "Software Engineer Intern",
+    "Title": "Software Engineer",
     "Company": "Corning Incorporated",
     "Description": "## Developed process for refactoring machine learning projects using Keras to be run in the cloud via Databricks\n## Wrote documentation to describe how to use Databricks, AWS S3, AWS EC2 instances, and MLFlow\n## Validated process by refactoring an existing classification model to run in Databricks",
     "Skills": "AWS S3, AWS EC2, MLflow, Keras, Python, Databricks",
@@ -25,7 +25,7 @@
   },
   {
     "Type": "Internship",
-    "Title": "Software Engineer Intern",
+    "Title": "Software Engineer",
     "Company": "Simone Center",
     "Description": "## Designed and developed a virtual boardgame platform as a full stack Vue.js and Django\n## Trained 3 other engineers how to develop web applications with a Vue.js/Django stack\n## Conducted customer interviews and assisted with business model analysis",
     "Skills": "Javascript, CSS, HTML, Vue, Django Rest Framework, Git",
@@ -37,7 +37,7 @@
   },
   {
     "Type": "Internship",
-    "Title": "Software Engineer Intern",
+    "Title": "Software Engineer",
     "Company": "Corning Incorporated",
     "Description": "##Created a generative adversarial network using the python library Keras to assist with data generation for an on##going confidential project.",
     "Skills": "Python, Pytorch, Keras, Git",
@@ -49,7 +49,7 @@
   },
   {
     "Type": "Internship",
-    "Title": "Software Engineer Intern",
+    "Title": "Software Engineer",
     "Company": "Corning Incorporated",
     "Description": "##Created a webpage to assist with data driven server policies",
     "Skills": "Javascript, HTML, CSS, Gitlab",

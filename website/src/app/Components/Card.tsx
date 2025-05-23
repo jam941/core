@@ -44,18 +44,30 @@ const Card = ({ data, onSkillClick, activeFilters, isAnimatingOut }: CardProps) 
 
     const animationClass = isAnimatingOut ? 'card-exit' : 'card-enter';
 
-    const getDescList = ()=>{
-        var desc = data.Description.split("##").slice(1)
-        console.log(desc)
+    const getDescList = () => {
+        var desc = data.Description.split("##").slice(1);
         return (
-            <ul className="list-disc pl-4 space-y-2">
+            <ul style={{ 
+                listStyleType: 'disc', 
+                paddingLeft: '16px',
+                margin: '0',
+                display: 'flex', 
+                flexDirection: 'column', 
+                gap: '6px',
+                fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif'
+            }}>
                 {desc.map((item: string, index: number) => (
-                    <li className="text-sm leading-tight text-white mb-1 text-left hover:text-primary-light transition-colors duration-200" key={index}>
-                        {item}
-                    </li>
-                ))} 
+                    <li key={index} style={{
+                        fontSize: '14px',
+                        lineHeight: '1.5',
+                        color: '#e2e8f0',
+                        marginBottom: '2px',
+                        textAlign: 'left',
+                        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif'
+                    }}>{item}</li>
+                ))}
             </ul>
-        )
+        );
     }
 
     const renderSkills = () => {
@@ -87,15 +99,25 @@ const Card = ({ data, onSkillClick, activeFilters, isAnimatingOut }: CardProps) 
                 });
             });
             
+            const skillButtonStyle = {
+                display: 'inline-block',
+                border: isActive ? '1px solid #3B82F6' : '1px solid #3e4758',
+                padding: '4px 10px',
+                borderRadius: '4px',
+                fontSize: '12px',
+                fontWeight: 500,
+                color: isActive ? '#3B82F6' : '#d1d5db',
+                background: isActive ? 'rgba(59, 130, 246, 0.1)' : 'rgba(255, 255, 255, 0.03)',
+                transition: 'all 0.2s',
+                cursor: 'pointer',
+                fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif'
+            };
+            
             return (
                 <button
                     key={index}
                     onClick={(e) => handleSkillClick(skill, e)}
-                    className={`skill-button mr-2 mb-1 inline-block px-2 py-1 rounded-full text-xs font-semibold tracking-wide border ${
-                        isActive 
-                            ? 'skill-button-active text-white border-primary' 
-                            : 'text-primary-light border-primary-light hover:text-white hover:border-primary'
-                    } transition-all duration-300`}
+                    style={skillButtonStyle}
                 >
                     {skill}
                 </button>
@@ -105,39 +127,121 @@ const Card = ({ data, onSkillClick, activeFilters, isAnimatingOut }: CardProps) 
 
     return(
         <React.Fragment>
-        <div 
-            className={`${animationClass} card-gradient ${getColor()} mt-4 w-full mx-auto bg-card-bg rounded-2xl shadow-card hover:shadow-hover transform hover:-translate-y-1 transition-all duration-300 overflow-hidden md:max-w-2xl`}
-        >
-            {/* Card header - Responsive layout */}
-            <div className="bg-gradient-to-r from-card-header to-card-header/80 p-3 md:p-4">
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                    <p className="text-xs md:text-sm text-white font-bold">{data.Type}</p>
-                    <p className="text-xs md:text-sm text-white font-bold">{data.Company}</p>
-                    <h3 className="text-xs md:text-sm text-white leading-tight font-medium w-full md:w-auto order-first md:order-none mb-2 md:mb-0">{data.Title}</h3>
-                    <p className="text-xs md:text-sm text-white">{data.StartDate} - {data.EndDate}</p>
+        <div style={{
+            marginTop: '16px',
+            width: '100%',
+            backgroundColor: '#1e2127',
+            borderRadius: '8px',
+            border: '1px solid #2a2e38',
+            boxShadow: '0 2px 6px rgba(0, 0, 0, 0.15)',
+            transform: 'translateY(0)',
+            transition: 'all 0.3s',
+            overflow: 'hidden',
+            borderLeft: '4px solid #3B82F6',
+            animation: isAnimatingOut ? 'card-fade-out 0.4s forwards' : 'card-fade-in 0.5s'
+        }}>
+            {/* Card header */}
+            <div style={{
+                background: '#1e2127',
+                padding: '12px 16px',
+                borderBottom: '1px solid #2a2e38'
+            }}>
+                <div style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    width: '100%'
+                }}>
+                    <p style={{ 
+                        fontSize: '13px', 
+                        color: 'white', 
+                        fontWeight: 'bold', 
+                        margin: '0',
+                        width: '33%',
+                        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif'
+                    }}>{data.Title}</p>
+                    <p style={{ 
+                        fontSize: '13px', 
+                        color: 'white', 
+                        margin: '0',
+                        width: '33%',
+                        textAlign: 'center',
+                        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif'
+                    }}>{data.Type} · {data.Company}</p>
+                    <p style={{ 
+                        fontSize: '13px', 
+                        color: '#d1d5db', 
+                        margin: '0',
+                        width: '33%',
+                        textAlign: 'right',
+                        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif'
+                    }}>{data.StartDate} - {data.EndDate}</p>
                 </div>
             </div>
             
             {/* Card body */}
-            <div className="p-4 md:p-6 transition-all duration-300">
-                {!isOpen ? 
-                getDescList() : 
-                <p className="text-sm leading-tight text-white">{data.Brief}</p> }
+            <div style={{ 
+                padding: '12px 16px', 
+                transition: 'all 0.3s',
+                display: 'flex',
+                flexDirection: 'column',
+                height: '100%'
+            }}>
+                <div style={{ flex: 1 }}>
+                    {!isOpen ? 
+                    getDescList() : 
+                    <p style={{ 
+                        fontSize: '14px', 
+                        lineHeight: '1.5', 
+                        color: '#e2e8f0',
+                        margin: '0',
+                        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif'
+                    }}>{data.Brief}</p> }
+                </div>
                 
-                <button 
-                    className="filter-button mt-3 inline-block text-primary-light hover:text-white transition-colors duration-200 px-3 py-1 rounded-full text-xs font-semibold tracking-wide border border-primary-light hover:border-primary shadow-button hover:shadow-button-hover" 
-                    onClick={(e) => toggleDetail(!isOpen, e)}
-                    style={{color: '#60A5FA'}}
-                >
-                    {isOpen ? 'Show More' : 'Show Less'}
-                </button>
+                <div style={{ 
+                    display: 'flex', 
+                    justifyContent: 'center', 
+                    marginTop: '12px',
+                    marginBottom: '4px'
+                }}>
+                    <button 
+                        style={{
+                          display: 'inline-block',
+                          border: '1px solid #3B82F6',
+                          padding: '4px 12px',
+                          borderRadius: '4px',
+                          fontSize: '12px',
+                          fontWeight: 500,
+                          color: '#3B82F6',
+                          background: 'transparent',
+                          transition: 'all 0.2s',
+                          cursor: 'pointer',
+                          fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif'
+                        }}
+                        onClick={(e) => toggleDetail(!isOpen, e)}
+                    >
+                        {isOpen ? 'Show More' : 'Show Less'}
+                    </button>
+                </div>
             </div>
             
             {/* Card footer with skills */}
-            <div className="bg-gradient-to-r from-card-footer to-card-footer/90 p-3 md:p-4">
-                <div className="text-sm text-white">
-                    <span className="font-semibold">Skills:</span> 
-                    <div className="flex flex-wrap mt-2">
+            <div style={{
+                borderTop: '1px solid #2a2e38',
+                padding: '12px 16px'
+            }}>
+                <div style={{ 
+                    fontSize: '13px', 
+                    color: '#e2e8f0',
+                    fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif'
+                }}>
+                    <div style={{ 
+                        marginBottom: '6px',
+                        fontWeight: '600',
+                        color: '#d1d5db'
+                    }}>Skills:</div>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px' }}>
                         {renderSkills()}
                     </div>
                 </div>
