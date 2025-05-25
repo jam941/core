@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="32" height="32">
+  <defs>
+    <linearGradient id="grapeGradient" x1="0" y1="14" x2="0" y2="50" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#7d3cb4"/>
+      <stop offset="50%" stop-color="#6a0dad"/>
+      <stop offset="100%" stop-color="#581d88"/>
+    </linearGradient>
+  </defs>
+
+  <rect x="20" y="12" width="24" height="40" rx="6" fill="#f4f4f4" stroke="#999" stroke-width="1.5"/>
+
+  <rect x="22" y="16" width="20" height="32" rx="4" fill="url(#grapeGradient)"/>
+
+  <rect x="20" y="8" width="24" height="6" rx="1" fill="#bbb" stroke="#888" stroke-width="1"/>
+
+  <path d="M24 20 C25 18, 27 18, 28 20 S30 24, 31 26" stroke="white" stroke-opacity="0.2" stroke-width="1" fill="none"/>
+
+  <ellipse cx="32" cy="56" rx="10" ry="2.5" fill="#ccc" opacity="0.3"/>
+</svg>
