@@ -15,23 +15,37 @@ function App() {
   const [dynamicFilters, setDynamicFilters] = useState<{[key: string]: {filterValue: string, displayText: string}}>({});
   const [visibleJobs, setVisibleJobs] = useState<{[key: string]: boolean}>({});
   const [animatingJobs, setAnimatingJobs] = useState<{[key: string]: boolean}>({});
-  const [windowWidth, setWindowWidth] = useState<number>(typeof window !== 'undefined' ? window.innerWidth : 1200);
+  const [windowDimensions, setWindowDimensions] = useState<{width: number, height: number}>(
+    { width: 1200, height: 800 }
+  );
+  
+  const [isMounted, setIsMounted] = useState(false);
   
   useEffect(() => {
-    if (typeof window !== 'undefined') {
+    setIsMounted(true);
+  }, []);
+  
+  useEffect(() => {
+    if (isMounted) {
       const handleResize = () => {
-        setWindowWidth(window.innerWidth);
+        setWindowDimensions({
+          width: window.innerWidth,
+          height: window.innerHeight
+        });
       };
       
+      handleResize();
+      
       window.addEventListener('resize', handleResize);
-      handleResize(); 
+      window.addEventListener('orientationchange', handleResize);
       
       return () => {
         window.removeEventListener('resize', handleResize);
+        window.removeEventListener('orientationchange', handleResize);
       };
     }
-  }, []);
-
+  }, [isMounted]);
+  
   useEffect(() => {
     const initialVisibility: {[key: string]: boolean} = {};
     jobs.forEach((job, index) => {
@@ -223,49 +237,66 @@ function App() {
     );
   }
 
-  const isMobile = windowWidth < 1024;
+  const isMobile = (() => {
+    if (!isMounted) return false;
+    
+    const isNarrowViewport = windowDimensions.width < 1024;
+    
+    const hasMobileUserAgent = 
+      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+      (navigator.maxTouchPoints && navigator.maxTouchPoints > 2);
+    
+    return isNarrowViewport || hasMobileUserAgent;
+  })();
   
   if(stringData.length === 0) {
     return getSpinner();
   }
 
+  const layoutStyles = {
+    display: 'flex',
+    flexDirection: isMounted ? (isMobile ? 'column' as const : 'row' as const) : 'row' as const,
+    width: '100%',
+    height: '100vh', 
+    overflow: 'hidden' as const, 
+    overflowX: 'hidden' as const,
+    backgroundColor: '#1a1e24',
+    padding: '0',
+    boxSizing: 'border-box' as const
+  };
+
   return (
-    <div style={{ 
-      display: 'flex', 
-      flexDirection: isMobile ? 'column' : 'row', 
-      width: '100%', 
-      height: isMobile ? 'auto' : '100vh', 
-      overflow: isMobile ? 'auto' : 'hidden', 
-      overflowX: 'hidden', 
-      backgroundColor: '#1a1e24', 
-      padding: '0', 
-      boxSizing: 'border-box' 
-    }}>
+    <div 
+      className={isMounted && isMobile ? 'force-mobile-layout' : ''} 
+      style={layoutStyles}>
       {/* Left/Top margin */}
-      <div style={{ width: isMobile ? '100%' : '5%', height: isMobile ? '20px' : 'auto' }}></div>
+      <div style={{
+        width: isMounted ? (isMobile ? '100%' : '5%') : '5%',
+        height: isMounted ? (isMobile ? '20px' : 'auto') : 'auto'
+      }}></div>
       
       {/* Bio section */}
       <div style={{
-        width: isMobile ? '90%' : '40%',
-        margin: isMobile ? '0 auto' : '0',
-        marginBottom: isMobile ? '20px' : '0'
+        width: isMounted ? (isMobile ? '90%' : '40%') : '40%',
+        margin: isMounted ? (isMobile ? '0 auto' : '0') : '0',
+        marginBottom: isMounted ? (isMobile ? '20px' : '0') : '0'
       }}>
         <Bio/>
       </div>
       
       {/* Divider - horizontal for mobile, vertical for desktop */}
       <div style={{
-        width: isMobile ? '90%' : '10%',
-        height: isMobile ? 'auto' : 'auto',
-        margin: isMobile ? '10px auto' : '0',
+        width: isMounted ? (isMobile ? '90%' : '10%') : '10%',
+        height: 'auto',
+        margin: isMounted ? (isMobile ? '10px auto' : '0') : '0',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center'
       }}>
         <div style={{
-          height: isMobile ? '1px' : '90%',
-          width: isMobile ? '100%' : '1px',
-          background: isMobile
+          height: isMounted ? (isMobile ? '1px' : '90%') : '90%',
+          width: isMounted ? (isMobile ? '100%' : '1px') : '1px',
+          background: isMounted && isMobile
             ? 'linear-gradient(to right, rgba(59, 130, 246, 0.4), rgba(59, 130, 246, 0.15), rgba(59, 130, 246, 0.4))'
             : 'linear-gradient(to bottom, rgba(59, 130, 246, 0.4), rgba(59, 130, 246, 0.15), rgba(59, 130, 246, 0.4))',
           opacity: 0.8
@@ -276,9 +307,11 @@ function App() {
       <div style={{
         display: 'flex',
         flexDirection: 'column',
-        width: isMobile ? '90%' : '40%',
-        margin: isMobile ? '0 auto' : '0',
-        overflowX: 'hidden'
+        width: isMounted ? (isMobile ? '90%' : '40%') : '40%',
+        margin: isMounted ? (isMobile ? '0 auto' : '0') : '0',
+        overflowX: 'hidden',
+        flex: isMounted && isMobile ? '1' : 'none', 
+        minHeight: isMounted && isMobile ? '0' : 'auto' 
       }}>
         {/* Filter buttons section */}
         <div style={{ color: 'white', backgroundColor: 'rgba(30, 33, 39, 0.5)', padding: '16px', borderRadius: '12px', marginBottom: '16px', boxShadow: 'inset 0 2px 4px 0 rgba(59, 130, 246, 0.06)', maxWidth: '100%', overflowX: 'hidden' }}>
@@ -299,13 +332,13 @@ function App() {
         </div>
 
         {/* Jobs list - Scrollable container */}
-        <div style={{ 
+        <div className={isMounted && isMobile ? 'mobile-card-container' : ''} style={{ 
           flex: 1, 
           overflowY: 'auto', 
           overflowX: 'hidden',
           paddingRight: '8px', 
           paddingBottom: '16px',
-          maxHeight: isMobile ? 'auto' : 'calc(100vh - 150px)' 
+          maxHeight: isMounted ? (isMobile ? 'none' : 'calc(100vh - 150px)') : 'calc(100vh - 150px)' 
         }}>
           <div style={{ padding: '8px 0' }}>
             {jobs && jobs.map((item, index) => (
@@ -322,7 +355,10 @@ function App() {
       </div>
       
       {/* Right/Bottom margin */}
-      <div style={{ width: isMobile ? '100%' : '5%', height: isMobile ? '20px' : 'auto' }}></div>
+      <div style={{
+        width: isMounted ? (isMobile ? '100%' : '5%') : '5%',
+        height: isMounted ? (isMobile ? '20px' : 'auto') : 'auto'
+      }}></div>
     </div>
   );
 }
