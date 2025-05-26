@@ -205,7 +205,9 @@ function App() {
       background: isActive ? 'linear-gradient(135deg, #3B82F6, #2563EB)' : 'transparent',
       transition: 'all 0.3s',
       margin: '4px',
-      cursor: 'pointer'
+      cursor: 'pointer',
+      flexShrink: 0,
+      whiteSpace: 'nowrap'
     };
     
     return (
@@ -314,8 +316,8 @@ function App() {
         minHeight: isMounted && isMobile ? '0' : 'auto' 
       }}>
         {/* Filter buttons section */}
-        <div style={{ color: 'white', backgroundColor: 'rgba(30, 33, 39, 0.5)', padding: '16px', borderRadius: '12px', marginBottom: '16px', boxShadow: 'inset 0 2px 4px 0 rgba(59, 130, 246, 0.06)', maxWidth: '100%', overflowX: 'hidden' }}>
-          <div className={isMounted && isMobile ? 'filter-buttons-container' : ''} style={{ display: 'flex', flexWrap: isMobile ? 'nowrap' : 'wrap', gap: '8px' }}>
+        <div style={{ color: 'white', backgroundColor: 'rgba(30, 33, 39, 0.5)', padding: isMobile ? '12px 16px 8px 16px' : '16px', borderRadius: '12px', marginBottom: '16px', boxShadow: 'inset 0 2px 4px 0 rgba(59, 130, 246, 0.06)', maxWidth: '100%', overflowX: isMobile ? 'auto' : 'hidden' }}>
+          <div className={isMounted && isMobile ? 'filter-buttons-container' : ''} style={{ display: 'flex', flexWrap: isMobile ? 'nowrap' : 'wrap', gap: '8px', width: isMobile ? 'max-content' : '100%' }}>
             {filterButton("Machine Learning / AI", "ml")}
             {filterButton("Frontend Development", "frontend")}
             {filterButton("Backend Development", "backend")}

@@ -23,6 +23,12 @@
     padding-bottom: 8px;
     scrollbar-width: none;
     -ms-overflow-style: none;
+    flex-wrap: nowrap !important;
+  }
+  
+  .filter-buttons-container > button {
+    flex-shrink: 0;
+    min-width: max-content;
   }
   
   .filter-buttons-container::-webkit-scrollbar {
