@@ -15,6 +15,20 @@
     position: fixed;
   }
   
+  .filter-buttons-container {
+    display: flex;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 8px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  
+  .filter-buttons-container::-webkit-scrollbar {
+    display: none;
+  }
+  
   .force-mobile-layout {
     display: flex;
     flex-direction: column !important;

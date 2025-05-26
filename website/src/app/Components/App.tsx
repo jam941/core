@@ -315,7 +315,7 @@ function App() {
       }}>
         {/* Filter buttons section */}
         <div style={{ color: 'white', backgroundColor: 'rgba(30, 33, 39, 0.5)', padding: '16px', borderRadius: '12px', marginBottom: '16px', boxShadow: 'inset 0 2px 4px 0 rgba(59, 130, 246, 0.06)', maxWidth: '100%', overflowX: 'hidden' }}>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+          <div className={isMounted && isMobile ? 'filter-buttons-container' : ''} style={{ display: 'flex', flexWrap: isMobile ? 'nowrap' : 'wrap', gap: '8px' }}>
             {filterButton("Machine Learning / AI", "ml")}
             {filterButton("Frontend Development", "frontend")}
             {filterButton("Backend Development", "backend")}
