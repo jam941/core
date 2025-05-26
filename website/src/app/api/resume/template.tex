@@ -1,0 +1,49 @@
+\documentclass[11pt,a4paper,sans]{moderncv}
+
+% Moderncv theme
+\moderncvstyle{classic}
+\moderncvcolor{blue}
+
+% Character encoding
+\usepackage[utf8]{inputenc}
+
+% Adjust the page margins
+\usepackage[scale=0.85]{geometry}
+
+% Personal data
+\name{{{name}}}{}
+\title{{{title}}}
+\email{{{email}}}
+\social[github]{{{github}}}
+\social[linkedin]{{{linkedin}}}
+
+\begin{document}
+
+\makecvtitle
+
+% Education
+\section{Education}
+{{#education}}
+\cventry{{{years}}}{{{degree}}}{{{institution}}}{{{location}}}{}{{{description}}}
+{{/education}}
+
+% Experience
+\section{Experience}
+{{#experience}}
+\cventry{{{years}}}{{{position}}}{{{company}}}{{{location}}}{}{
+  \begin{itemize}
+    {{#responsibilities}}
+    \item {{{.}}}
+    {{/responsibilities}}
+  \end{itemize}
+}
+{{/experience}}
+
+% Skills
+\section{Skills}
+\cvitem{Languages}{{{skills.languages}}}
+\cvitem{Frameworks}{{{skills.frameworks}}}
+\cvitem{Tools}{{{skills.tools}}}
+\cvitem{Other}{{{skills.other}}}
+
+\end{document}

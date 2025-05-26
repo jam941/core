@@ -1,0 +1,79 @@
+{
+  "name": "Jarred Moyer",
+  "title": "Software Engineer",
+  "email": "jarredds941@gmail.com",
+  "github": "jam941",
+  "linkedin": "jarredmoyer",
+  "education": [
+    {
+      "years": "2019-2023",
+      "degree": "Bachelor of Science in Software Engineering",
+      "institution": "Rochester Institute of Technology",
+      "location": "Rochester, NY",
+      "description": "B.S. Software Engineering, 2023"
+    }
+  ],
+  "experience": [
+    {
+      "years": "2023-Present",
+      "position": "Software Engineer",
+      "company": "WeTheHobby",
+      "location": "",
+      "responsibilities": [
+        "Currently building internal and broadcast tools",
+        "Developing full-stack applications with modern web technologies"
+      ]
+    },
+    {
+      "years": "January 2022 - August 2022",
+      "position": "Software Engineer Intern",
+      "company": "UKG",
+      "location": "",
+      "responsibilities": [
+        "Improved data correction tools for developers and testers of UKG Ready by implementing form verification",
+        "Enhanced accessibility for keyboard users and screenreader users by improving focus styling for popup components",
+        "Performed user impact research for new features by writing SQL queries",
+        "Wrote tests for checklist and document upload components with Jest"
+      ]
+    },
+    {
+      "years": "May 2021 - August 2021",
+      "position": "Software Engineer Intern",
+      "company": "Corning Incorporated",
+      "location": "",
+      "responsibilities": [
+        "Developed process for refactoring machine learning projects using Keras to be run in the cloud via Databricks",
+        "Wrote documentation for Databricks, AWS S3, AWS EC2 instances, and MLFlow",
+        "Validated process by refactoring an existing classification model to run in Databricks"
+      ]
+    },
+    {
+      "years": "August 2020 - December 2020",
+      "position": "Software Engineer Intern",
+      "company": "Simone Center",
+      "location": "",
+      "responsibilities": [
+        "Designed and developed a virtual boardgame platform as a full stack Vue.js and Django application",
+        "Trained 3 other engineers how to develop web applications with a Vue.js/Django stack",
+        "Conducted customer interviews and assisted with business model analysis"
+      ]
+    },
+    {
+      "years": "January 2019 - December 2022",
+      "position": "Software Engineer Intern",
+      "company": "Erway Ambulance",
+      "location": "",
+      "responsibilities": [
+        "Created a Java command line application to verify if a given employee is omitted from practicing medicine in the United States",
+        "Refactored the app into a static webpage to provide users with a UI",
+        "Refactored the app into a React/Express.js application"
+      ]
+    }
+  ],
+  "skills": {
+    "languages": "JavaScript, TypeScript, Python, Java, CSS, HTML",
+    "frameworks": "React, Express, Vue, Django, Next.js",
+    "tools": "Git, AWS S3, AWS EC2, MLflow, Databricks, Keras",
+    "other": "Machine Learning, Full-Stack Development, Accessibility"
+  }
+}
