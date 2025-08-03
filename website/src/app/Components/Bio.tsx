@@ -36,8 +36,27 @@ function Bio() {
                 boxShadow: 'inset 0 2px 4px 0 rgba(59, 130, 246, 0.06)' 
             }}>
                 <p style={{ fontSize: '14px', fontWeight: '600' }}>
-                    Currently building internal and broadcast tools for WeTheHobby
+                    Currently building internal product management systems and interactive media applications for
+                    <a href="https://www.linkedin.com/company/wethehobby/about/" target="_blank" style={{ color: '#3B82F6', transition: 'color 0.2s' }}>
+                        WeTheHobby
+                    </a>
+                    with responsibilities and experiences including:
                 </p>
+                <ul style={{ fontSize: '13px', paddingLeft: '16px', marginTop: '8px', lineHeight: '1.4' }}>
+                    <li>Managed release workflows for both internal and customer-facing applications</li>
+                    <li>Created onboarding documentation and supported integration of new engineers</li>
+                    <li>Participated in requirements gathering and post-launch support for multiple projects</li>
+                    <li>Built reusable tooling to streamline recurring development patterns, including:</li>
+                    <ul style={{ paddingLeft: '16px', marginTop: '4px' }}>
+                        <li>Abstracted integration between ORMs and common dashboard operations</li>
+                        <li>Sync systems for consistent frontend–backend state management</li>
+                        <li>Frontend component library for consistent styling and an improved developer experience</li>
+                        <li>Entity change tracking and reporting</li>
+                    </ul>
+                    <li>Established and maintained code quality standards using linters and contribution guidelines</li>
+                    <li>Defined API naming conventions to ensure clarity and promote reusability</li>
+                    <li>Implemented middleware to enhance request logging and identity tracking</li>
+                </ul>
             </div>
             
             <div style={{ display: 'flex', alignItems: 'center', gap: '16px', color: 'white', marginTop: '12px' }}>
