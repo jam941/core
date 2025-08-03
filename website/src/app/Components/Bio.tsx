@@ -42,12 +42,12 @@ function Bio() {
                     </a>
                     with responsibilities and experiences including:
                 </p>
-                <ul style={{ fontSize: '13px', paddingLeft: '16px', marginTop: '8px', lineHeight: '1.4' }}>
+                <ul style={{ fontSize: '13px', paddingLeft: '24px', marginTop: '8px', lineHeight: '1.4', textAlign: 'left', listStyleType: 'disc' }}>
                     <li>Managed release workflows for both internal and customer-facing applications</li>
                     <li>Created onboarding documentation and supported integration of new engineers</li>
                     <li>Participated in requirements gathering and post-launch support for multiple projects</li>
                     <li>Built reusable tooling to streamline recurring development patterns, including:</li>
-                    <ul style={{ paddingLeft: '16px', marginTop: '4px' }}>
+                    <ul style={{ paddingLeft: '24px', marginTop: '4px', textAlign: 'left', listStyleType: 'circle' }}>
                         <li>Abstracted integration between ORMs and common dashboard operations</li>
                         <li>Sync systems for consistent frontend–backend state management</li>
                         <li>Frontend component library for consistent styling and an improved developer experience</li>
@@ -55,7 +55,7 @@ function Bio() {
                     </ul>
                     <li>Established and maintained code quality standards using linters and contribution guidelines</li>
                     <li>Defined API naming conventions to ensure clarity and promote reusability</li>
-                    <li>Implemented middleware to enhance request logging and identity tracking</li>
+                    <li>Implemented middleware to enhance request logging and identity tracking</li>                
                 </ul>
             </div>
             
