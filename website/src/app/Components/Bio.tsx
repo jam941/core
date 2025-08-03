@@ -36,11 +36,11 @@ function Bio() {
                 boxShadow: 'inset 0 2px 4px 0 rgba(59, 130, 246, 0.06)' 
             }}>
                 <p style={{ fontSize: '14px', fontWeight: '600' }}>
-                    Currently building internal product management systems and interactive media applications for
+                    Currently building internal product management systems and interactive media applications for{' '}
                     <a href="https://www.linkedin.com/company/wethehobby/about/" target="_blank" style={{ color: '#3B82F6', transition: 'color 0.2s' }}>
                         WeTheHobby
                     </a>
-                    with responsibilities and experiences including:
+                    {' '}with responsibilities and experiences including:
                 </p>
                 <ul style={{ fontSize: '13px', paddingLeft: '24px', marginTop: '8px', lineHeight: '1.4', textAlign: 'left', listStyleType: 'disc' }}>
                     <li>Managed release workflows for both internal and customer-facing applications</li>
@@ -57,6 +57,9 @@ function Bio() {
                     <li>Defined API naming conventions to ensure clarity and promote reusability</li>
                     <li>Implemented middleware to enhance request logging and identity tracking</li>                
                 </ul>
+                <p style={{ fontSize: '13px', marginTop: '12px', fontWeight: '500' }}>
+                    <span style={{ color: '#3B82F6' }}>Technologies:</span> Git, C#, JavaScript, TypeScript, SignalR, SocketIO, Express, EF Core, MUI, AWS, ADO
+                </p>
             </div>
             
             <div style={{ display: 'flex', alignItems: 'center', gap: '16px', color: 'white', marginTop: '12px' }}>
