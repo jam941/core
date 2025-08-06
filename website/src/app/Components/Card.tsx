@@ -43,7 +43,28 @@ const Card = ({ data, onSkillClick, activeFilters, isAnimatingOut }: CardProps) 
     };
 
     const getDescList = () => {
-        const desc = data.Description.split("##").slice(1);
+        const lines = data.Description.split('\n');
+        const bulletPoints: Array<{main: string, sub: string[]}> = [];
+        
+        let currentMain = '';
+        let currentSubs: string[] = [];
+        
+        for (const line of lines) {
+            if (line.startsWith('## ')) {
+                if (currentMain) {
+                    bulletPoints.push({ main: currentMain, sub: currentSubs });
+                }
+                currentMain = line.substring(3).trim();
+                currentSubs = [];
+            } else if (line.startsWith('### ')) {
+                currentSubs.push(line.substring(4).trim());
+            }
+        }
+        
+        if (currentMain) {
+            bulletPoints.push({ main: currentMain, sub: currentSubs });
+        }
+        
         return (
             <ul style={{ 
                 listStyleType: 'disc', 
@@ -54,7 +75,7 @@ const Card = ({ data, onSkillClick, activeFilters, isAnimatingOut }: CardProps) 
                 gap: '6px',
                 fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif'
             }}>
-                {desc.map((item: string, index: number) => (
+                {bulletPoints.map((point, index) => (
                     <li key={index} style={{
                         fontSize: '14px',
                         lineHeight: '1.5',
@@ -62,7 +83,30 @@ const Card = ({ data, onSkillClick, activeFilters, isAnimatingOut }: CardProps) 
                         marginBottom: '2px',
                         textAlign: 'left',
                         fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif'
-                    }}>{item}</li>
+                    }}>
+                        {point.main}
+                        {point.sub.length > 0 && (
+                            <ul style={{
+                                listStyleType: 'circle',
+                                paddingLeft: '20px',
+                                margin: '4px 0 0 0',
+                                display: 'flex',
+                                flexDirection: 'column',
+                                gap: '4px'
+                            }}>
+                                {point.sub.map((subPoint, subIndex) => (
+                                    <li key={subIndex} style={{
+                                        fontSize: '13px',
+                                        lineHeight: '1.4',
+                                        color: '#cbd5e1',
+                                        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif'
+                                    }}>
+                                        {subPoint}
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
+                    </li>
                 ))}
             </ul>
         );
