@@ -9,7 +9,7 @@ import Bio from './Bio';
 import Card from './Card';
 
 function App() {
-  const [jobs, setJobs] = useState<Job[]>(data);
+  const [jobs, setJobs] = useState<Job[]>(data as Job[]);
   const [stringData] = useState<string>(JSON.stringify({data}));
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
   const [dynamicFilters, setDynamicFilters] = useState<{[key: string]: {filterValue: string, displayText: string}}>({});
