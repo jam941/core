@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Job } from '../Interfaces/CardType';
+import { JobType } from '../Interfaces/JobTypeEnum';
 
 interface CardProps {
     data: Job;
@@ -22,24 +23,17 @@ const Card = ({ data, onSkillClick, activeFilters, isAnimatingOut }: CardProps) 
     };
 
     const getColor = () => {
-        const color = data.Color?.toLowerCase();
+        const jobType = data.Type;
+        const colorMap = {
+            [JobType.Internship]: "#2cd14a",
+            [JobType.FullTime]: "#3b82f6", 
+            [JobType.PartTime]: "#10b981",
+            [JobType.Contract]: "#f59e0b",
+            [JobType.Freelance]: "#ef4444",
+            [JobType.Project]: "#f97316"
+        };
         
-        if (color === "red") {
-            return "card-red";
-        } else if (color === "blue") {
-            return "card-blue";
-        } else {
-            const typeColors = {
-                "Internship": "border-blue-500",
-                "Part Time": "border-green-500",
-                "Full Time": "border-purple-500",
-                "Contract": "border-yellow-500",
-                "Freelance": "border-red-500",
-                "Open Source": "border-indigo-500"
-            };
-            
-            return typeColors[data.Type as keyof typeof typeColors] || "border-gray-500";
-        }
+        return colorMap[jobType as JobType] || "#6b7280";
     };
 
     const getDescList = () => {
@@ -166,7 +160,7 @@ const Card = ({ data, onSkillClick, activeFilters, isAnimatingOut }: CardProps) 
             );
         });
     };
-
+    
     return(
         <React.Fragment>
         <div style={{
@@ -179,7 +173,7 @@ const Card = ({ data, onSkillClick, activeFilters, isAnimatingOut }: CardProps) 
             transform: 'translateY(0)',
             transition: 'all 0.3s',
             overflow: 'hidden',
-            borderLeft: `4px solid ${getColor().startsWith('border-') ? getColor().replace('border-', '') : '#3B82F6'}`,
+            borderLeft: `4px solid ${getColor()}`,
             animation: isAnimatingOut ? 'card-fade-out 0.4s forwards' : 'card-fade-in 0.5s'
         }}>
             {/* Card header */}

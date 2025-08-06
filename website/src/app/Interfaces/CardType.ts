@@ -1,5 +1,7 @@
+import { JobType } from "./JobTypeEnum";
+
 export interface Job {
-    Type: string;
+    Type: JobType;
     Company: string;
     Title: string;
     StartDate: string;
@@ -7,6 +9,5 @@ export interface Job {
     Brief: string;
     Description: string;
     Skills: string;
-    Color: string;
     meta?: string;
 }

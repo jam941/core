@@ -201,16 +201,6 @@ button:hover:after {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
-.card-blue {
-  border-color: #3B82F6;
-  box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.1), 0 2px 4px -1px rgba(59, 130, 246, 0.06);
-}
-
-.card-red {
-  border-color: #EF4444;
-  box-shadow: 0 4px 6px -1px rgba(239, 68, 68, 0.1), 0 2px 4px -1px rgba(239, 68, 68, 0.06);
-}
-
 .ouro {
   position: relative;
   display:inline-block;
