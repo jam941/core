@@ -1,6 +1,5 @@
 import { Job } from '../Interfaces/CardType';
 import { JobType } from '../Interfaces/JobTypeEnum';
-import data from '../Data/data.json';
 
 const JOB_TYPES = new Set<string>(Object.values(JobType));
 
@@ -21,7 +20,7 @@ function isJob(x: unknown): x is Job {
   );
 }
 
-function parseJobsData(raw: unknown): Job[] {
+export function parseJobsData(raw: unknown): Job[] {
   if (!Array.isArray(raw)) {
     console.warn('jobs data is not an array');
     return [];
@@ -37,5 +36,3 @@ function parseJobsData(raw: unknown): Job[] {
 export function jobId(job: Job): string {
   return [job.Title, job.Company, job.StartDate, job.EndDate].join('\u0000');
 }
-
-export const ORIGINAL_JOBS = parseJobsData(data as unknown);

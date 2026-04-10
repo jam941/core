@@ -5,7 +5,11 @@ import '../styles/App.css';
 import { Job } from '../Interfaces/CardType';
 import Bio from './Bio';
 import Card from './Card';
-import { ORIGINAL_JOBS, jobId } from '../lib/jobs';
+import { jobId } from '../lib/jobs';
+
+interface AppProps {
+  initialJobs: Job[];
+}
 
 /** Keep in sync with `card-fade-out` in App.css / Card.tsx (0.4s). */
 const FILTER_TRANSITION_MS = 400;
@@ -33,8 +37,8 @@ function buildAnimatingOut(
   return animating;
 }
 
-function App() {
-  const [jobs, setJobs] = useState<Job[]>(() => [...ORIGINAL_JOBS]);
+function App({ initialJobs }: AppProps) {
+  const [jobs, setJobs] = useState<Job[]>(() => [...initialJobs]);
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
   const [dynamicFilters, setDynamicFilters] = useState<{
     [key: string]: { filterValue: string; displayText: string };
@@ -87,11 +91,11 @@ function App() {
 
   const filterJobs = (filters: string[]) => {
     if (filters.length === 0) {
-      setJobs([...ORIGINAL_JOBS]);
+      setJobs([...initialJobs]);
       return;
     }
 
-    setJobs(ORIGINAL_JOBS.filter((job) => jobMatchesFilters(job, filters)));
+    setJobs(initialJobs.filter((job) => jobMatchesFilters(job, filters)));
   };
 
   const changeFilter = (filterValue: string) => {
@@ -101,8 +105,8 @@ function App() {
 
       const newFilteredJobs =
         newFilters.length === 0
-          ? ORIGINAL_JOBS
-          : ORIGINAL_JOBS.filter((job) => jobMatchesFilters(job, newFilters));
+          ? initialJobs
+          : initialJobs.filter((job) => jobMatchesFilters(job, newFilters));
 
       const willBeVisible = buildVisibilityMap(newFilteredJobs);
       const animating = buildAnimatingOut(visibleJobs, willBeVisible, jobs);
@@ -111,7 +115,7 @@ function App() {
 
       scheduleFilterUpdate(() => {
         if (newFilters.length === 0) {
-          setJobs([...ORIGINAL_JOBS]);
+          setJobs([...initialJobs]);
         } else {
           filterJobs(newFilters);
         }
@@ -122,7 +126,7 @@ function App() {
       const newFilters = [...activeFilters, filterValue];
       setActiveFilters(newFilters);
 
-      const newFilteredJobs = ORIGINAL_JOBS.filter((job) =>
+      const newFilteredJobs = initialJobs.filter((job) =>
         jobMatchesFilters(job, newFilters)
       );
 
@@ -202,7 +206,7 @@ function App() {
       .map(([, value]) => filterButton(value.displayText, value.filterValue));
   };
 
-  if (ORIGINAL_JOBS.length === 0) {
+  if (initialJobs.length === 0) {
     return (
       <div className="app-root">
         <p>No roles to display.</p>

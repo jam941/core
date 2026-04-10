@@ -1,6 +1,46 @@
-import React, { useState } from 'react';
+import React, { useState, type ReactNode } from 'react';
 import { Job } from '../Interfaces/CardType';
 import { JobType } from '../Interfaces/JobTypeEnum';
+
+const MD_INLINE =
+  /(\*\*\*(.+?)\*\*\*|\*\*(.+?)\*\*|\*(.+?)\*|`(.+?)`|~~(.+?)~~|\[([^\]]+)\]\(([^)]+)\))/g;
+
+function renderInlineMarkdown(text: string): ReactNode {
+  const parts: ReactNode[] = [];
+  let lastIndex = 0;
+  let key = 0;
+
+  for (const m of text.matchAll(MD_INLINE)) {
+    if (m.index > lastIndex) parts.push(text.slice(lastIndex, m.index));
+
+    if (m[2] !== undefined)
+      parts.push(<strong key={key}><em>{m[2]}</em></strong>);
+    else if (m[3] !== undefined)
+      parts.push(<strong key={key}>{m[3]}</strong>);
+    else if (m[4] !== undefined)
+      parts.push(<em key={key}>{m[4]}</em>);
+    else if (m[5] !== undefined)
+      parts.push(
+        <code key={key} style={{ background: 'var(--color-code-bg, rgba(135,131,120,0.15))', padding: '2px 4px', borderRadius: '3px', fontSize: '0.9em' }}>
+          {m[5]}
+        </code>,
+      );
+    else if (m[6] !== undefined)
+      parts.push(<del key={key}>{m[6]}</del>);
+    else if (m[7] !== undefined && m[8] !== undefined)
+      parts.push(
+        <a key={key} href={m[8]} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--color-accent)', textDecoration: 'underline' }}>
+          {m[7]}
+        </a>,
+      );
+
+    key++;
+    lastIndex = m.index + m[0].length;
+  }
+
+  if (lastIndex < text.length) parts.push(text.slice(lastIndex));
+  return parts.length <= 1 ? parts[0] ?? '' : <>{parts}</>;
+}
 
 interface CardProps {
   data: Job;
@@ -45,14 +85,19 @@ const Card = ({ data, onSkillClick, activeFilters, isAnimatingOut }: CardProps) 
     let currentSubs: string[] = [];
 
     for (const line of lines) {
-      if (line.startsWith('## ')) {
-        if (currentMain) {
-          bulletPoints.push({ main: currentMain, sub: currentSubs });
-        }
-        currentMain = line.substring(3).trim();
+      if (line.startsWith('### ') || line.startsWith('  - ') || line.startsWith('  * ')) {
+        const text = line.replace(/^(?:### |  [-*] )/, '').trim();
+        if (text) currentSubs.push(text);
+
+      } else if (line.startsWith('## ') || line.startsWith('- ') || line.startsWith('* ')) {
+        if (currentMain) bulletPoints.push({ main: currentMain, sub: currentSubs });
+        currentMain = line.replace(/^(?:## |[-*] )/, '').trim();
         currentSubs = [];
-      } else if (line.startsWith('### ')) {
-        currentSubs.push(line.substring(4).trim());
+        
+      } else if (line.trim()) {
+        if (currentMain) bulletPoints.push({ main: currentMain, sub: currentSubs });
+        currentMain = line.trim();
+        currentSubs = [];
       }
     }
 
@@ -86,7 +131,7 @@ const Card = ({ data, onSkillClick, activeFilters, isAnimatingOut }: CardProps) 
                 '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif',
             }}
           >
-            {point.main}
+            {renderInlineMarkdown(point.main)}
             {point.sub.length > 0 && (
               <ul
                 style={{
@@ -109,7 +154,7 @@ const Card = ({ data, onSkillClick, activeFilters, isAnimatingOut }: CardProps) 
                         '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif',
                     }}
                   >
-                    {subPoint}
+                    {renderInlineMarkdown(subPoint)}
                   </li>
                 ))}
               </ul>
