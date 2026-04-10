@@ -1,107 +1,75 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import '../styles/App.css';
 import { Job } from '../Interfaces/CardType';
-import data from '../Data/data.json';
 import Bio from './Bio';
 import Card from './Card';
+import { ORIGINAL_JOBS, jobId } from '../lib/jobs';
+
+/** Keep in sync with `card-fade-out` in App.css / Card.tsx (0.4s). */
+const FILTER_TRANSITION_MS = 400;
+
+function buildVisibilityMap(filteredJobs: Job[]): Record<string, boolean> {
+  const m: Record<string, boolean> = {};
+  for (const job of filteredJobs) {
+    m[jobId(job)] = true;
+  }
+  return m;
+}
+
+function buildAnimatingOut(
+  prevVisible: Record<string, boolean>,
+  nextVisible: Record<string, boolean>,
+  currentJobs: Job[]
+): Record<string, boolean> {
+  const animating: Record<string, boolean> = {};
+  for (const job of currentJobs) {
+    const id = jobId(job);
+    if (prevVisible[id] && !nextVisible[id]) {
+      animating[id] = true;
+    }
+  }
+  return animating;
+}
 
 function App() {
-  const [jobs, setJobs] = useState<Job[]>(data as Job[]);
-  const [stringData] = useState<string>(JSON.stringify({ data }));
+  const [jobs, setJobs] = useState<Job[]>(() => [...ORIGINAL_JOBS]);
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
   const [dynamicFilters, setDynamicFilters] = useState<{
     [key: string]: { filterValue: string; displayText: string };
   }>({});
-  const [visibleJobs, setVisibleJobs] = useState<{ [key: string]: boolean }>({});
-  const [animatingJobs, setAnimatingJobs] = useState<{ [key: string]: boolean }>({});
+  const [visibleJobs, setVisibleJobs] = useState<Record<string, boolean>>({});
+  const [animatingJobs, setAnimatingJobs] = useState<Record<string, boolean>>({});
+  const filterTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const scheduleFilterUpdate = (fn: () => void) => {
+    if (filterTimeoutRef.current !== null) {
+      clearTimeout(filterTimeoutRef.current);
+    }
+    filterTimeoutRef.current = setTimeout(() => {
+      filterTimeoutRef.current = null;
+      fn();
+    }, FILTER_TRANSITION_MS);
+  };
 
   useEffect(() => {
-    const initialVisibility: { [key: string]: boolean } = {};
-    jobs.forEach((job, index) => {
-      initialVisibility[`job-${index}`] = true;
+    return () => {
+      if (filterTimeoutRef.current !== null) {
+        clearTimeout(filterTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  useEffect(() => {
+    const initialVisibility: Record<string, boolean> = {};
+    jobs.forEach((job) => {
+      initialVisibility[jobId(job)] = true;
     });
     setVisibleJobs(initialVisibility);
   }, [jobs]);
 
-  const changeFilter = (filterValue: string) => {
-    if (activeFilters.includes(filterValue)) {
-      const newFilters = activeFilters.filter((f) => f !== filterValue);
-      setActiveFilters(newFilters);
-
-      const tempJobs = JSON.parse(stringData).data;
-      const newFilteredJobs =
-        newFilters.length === 0
-          ? tempJobs
-          : tempJobs.filter((job: Job) => jobMatchesFilters(job, newFilters));
-
-      const willBeVisible: { [key: string]: boolean } = {};
-      newFilteredJobs.forEach((job: Job, index: number) => {
-        willBeVisible[`job-${index}`] = true;
-      });
-
-      const animating: { [key: string]: boolean } = {};
-      jobs.forEach((job, index) => {
-        if (!willBeVisible[`job-${index}`] && visibleJobs[`job-${index}`]) {
-          animating[`job-${index}`] = true;
-        }
-      });
-
-      setAnimatingJobs(animating);
-
-      setTimeout(() => {
-        if (newFilters.length === 0) {
-          setJobs(JSON.parse(stringData).data);
-        } else {
-          filterJobs(newFilters);
-        }
-        setAnimatingJobs({});
-
-        setVisibleJobs(willBeVisible);
-      }, 300);
-    } else {
-      const newFilters = [...activeFilters, filterValue];
-      setActiveFilters(newFilters);
-
-      const tempJobs = JSON.parse(stringData).data;
-      const newFilteredJobs = tempJobs.filter((job: Job) =>
-        jobMatchesFilters(job, newFilters)
-      );
-
-      const willBeVisible: { [key: string]: boolean } = {};
-      newFilteredJobs.forEach((job: Job) => {
-        const jobId = findJobIndex(job, tempJobs);
-        willBeVisible[`job-${jobId}`] = true;
-      });
-
-      const animating: { [key: string]: boolean } = {};
-      jobs.forEach((job, index) => {
-        if (!willBeVisible[`job-${index}`] && visibleJobs[`job-${index}`]) {
-          animating[`job-${index}`] = true;
-        }
-      });
-
-      setAnimatingJobs(animating);
-
-      setTimeout(() => {
-        filterJobs(newFilters);
-        setAnimatingJobs({});
-
-        setVisibleJobs(willBeVisible);
-      }, 300);
-    }
-  };
-
-  const findJobIndex = (job: Job, allJobs: Job[]): number => {
-    return allJobs.findIndex(
-      (j) =>
-        j.Title === job.Title &&
-        j.Company === job.Company &&
-        j.StartDate === job.StartDate
-    );
-  };
-
+  // Multiple active filters use OR semantics: a job matches if ANY active filter matches.
   const jobMatchesFilters = (job: Job, filters: string[]): boolean => {
     if (job.meta && filters.some((filter) => job.meta?.includes(filter))) {
       return true;
@@ -119,14 +87,56 @@ function App() {
 
   const filterJobs = (filters: string[]) => {
     if (filters.length === 0) {
-      setJobs(JSON.parse(stringData).data);
+      setJobs([...ORIGINAL_JOBS]);
       return;
     }
 
-    const tempJobs = JSON.parse(stringData).data;
-    const filteredJobs = tempJobs.filter((job: Job) => jobMatchesFilters(job, filters));
+    setJobs(ORIGINAL_JOBS.filter((job) => jobMatchesFilters(job, filters)));
+  };
 
-    setJobs(filteredJobs);
+  const changeFilter = (filterValue: string) => {
+    if (activeFilters.includes(filterValue)) {
+      const newFilters = activeFilters.filter((f) => f !== filterValue);
+      setActiveFilters(newFilters);
+
+      const newFilteredJobs =
+        newFilters.length === 0
+          ? ORIGINAL_JOBS
+          : ORIGINAL_JOBS.filter((job) => jobMatchesFilters(job, newFilters));
+
+      const willBeVisible = buildVisibilityMap(newFilteredJobs);
+      const animating = buildAnimatingOut(visibleJobs, willBeVisible, jobs);
+
+      setAnimatingJobs(animating);
+
+      scheduleFilterUpdate(() => {
+        if (newFilters.length === 0) {
+          setJobs([...ORIGINAL_JOBS]);
+        } else {
+          filterJobs(newFilters);
+        }
+        setAnimatingJobs({});
+        setVisibleJobs(willBeVisible);
+      });
+    } else {
+      const newFilters = [...activeFilters, filterValue];
+      setActiveFilters(newFilters);
+
+      const newFilteredJobs = ORIGINAL_JOBS.filter((job) =>
+        jobMatchesFilters(job, newFilters)
+      );
+
+      const willBeVisible = buildVisibilityMap(newFilteredJobs);
+      const animating = buildAnimatingOut(visibleJobs, willBeVisible, jobs);
+
+      setAnimatingJobs(animating);
+
+      scheduleFilterUpdate(() => {
+        filterJobs(newFilters);
+        setAnimatingJobs({});
+        setVisibleJobs(willBeVisible);
+      });
+    }
   };
 
   const predefinedFilters = [
@@ -178,6 +188,7 @@ function App() {
         key={metaShort}
         type="button"
         className={`filter-chip${isActive ? ' filter-chip--active' : ''}`}
+        aria-pressed={isActive}
         onClick={() => changeFilter(metaShort)}
       >
         {title}
@@ -186,29 +197,17 @@ function App() {
   };
 
   const renderDynamicFilterButtons = () => {
-    return Object.entries(dynamicFilters).map(([key, value]) => {
-      if (!predefinedFilters.includes(key)) {
-        return filterButton(value.displayText, value.filterValue);
-      }
-      return null;
-    });
+    return Object.entries(dynamicFilters)
+      .filter(([key]) => !predefinedFilters.includes(key))
+      .map(([, value]) => filterButton(value.displayText, value.filterValue));
   };
 
-  const getSpinner = () => {
+  if (ORIGINAL_JOBS.length === 0) {
     return (
-      <span className="ouro">
-        <span className="left">
-          <span className="anim"></span>
-        </span>
-        <span className="right">
-          <span className="anim"></span>
-        </span>
-      </span>
+      <div className="app-root">
+        <p>No roles to display.</p>
+      </div>
     );
-  };
-
-  if (stringData.length === 0) {
-    return getSpinner();
   }
 
   return (
@@ -245,17 +244,16 @@ function App() {
           </div>
         </div>
         <div className="app-jobs-scroll mobile-card-container">
-          <div style={{ padding: '8px 0' }}>
-            {jobs &&
-              jobs.map((item, index) => (
-                <Card
-                  key={`job-${index}`}
-                  data={item}
-                  onSkillClick={handleSkillClick}
-                  activeFilters={activeFilters}
-                  isAnimatingOut={animatingJobs[`job-${index}`] || false}
-                />
-              ))}
+          <div className="app-jobs-scroll-inner">
+            {jobs.map((item) => (
+              <Card
+                key={jobId(item)}
+                data={item}
+                onSkillClick={handleSkillClick}
+                activeFilters={activeFilters}
+                isAnimatingOut={animatingJobs[jobId(item)] ?? false}
+              />
+            ))}
           </div>
         </div>
       </div>

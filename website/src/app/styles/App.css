@@ -101,6 +101,10 @@
   min-height: 0;
 }
 
+.app-jobs-scroll-inner {
+  padding: 8px 0;
+}
+
 .filter-bar {
   color: var(--filter-label-fg);
   background-color: var(--color-filter-bar-bg);
