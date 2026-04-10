@@ -39,8 +39,6 @@ function getTitle(page: PageObjectResponse, name: string): string {
 
 function getRichText(page: PageObjectResponse, name: string): string {
   const prop = page.properties[name];
-  console.log("Name: ", name);
-  console.log("Prop: ", prop);
   if (prop?.type === 'rich_text') {
     return prop.rich_text.map((t) => t.plain_text).join('');
   }
@@ -187,10 +185,6 @@ function notionPageToJob(
 
   const skills = getMultiSelect(page, 'Skills');
   const tags = getMultiSelect(page, 'Tags');
-
-  const startDate = getRichText(page, 'Start Date');
-  const endDate = getRichText(page, 'End Date');
-
 
   return {
     Type: type,
