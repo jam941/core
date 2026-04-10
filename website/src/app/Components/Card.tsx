@@ -24,16 +24,18 @@ const Card = ({ data, onSkillClick, activeFilters, isAnimatingOut }: CardProps) 
 
     const getColor = () => {
         const jobType = data.Type;
-        const colorMap = {
-            [JobType.Internship]: "#2cd14a",
-            [JobType.FullTime]: "#3b82f6", 
-            [JobType.PartTime]: "#10b981",
-            [JobType.Contract]: "#f59e0b",
-            [JobType.Freelance]: "#ef4444",
-            [JobType.Project]: "#f97316"
-        };
         
-        return colorMap[jobType as JobType] || "#6b7280";
+        switch (jobType) {
+            case JobType.Internship:
+                return "card-green";
+            case JobType.FullTime:
+                return "card-blue";
+            case JobType.Project:
+                return "card-red";
+            default:
+
+                return "border-gray-500";
+        }
     };
 
     const getDescList = () => {

@@ -201,6 +201,41 @@ button:hover:after {
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
+.card-blue {
+  border-color: #3B82F6;
+  box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.1), 0 2px 4px -1px rgba(59, 130, 246, 0.06);
+}
+
+.card-purple {
+  border-color: #8B5CF6;
+  box-shadow: 0 4px 6px -1px rgba(139, 92, 246, 0.1), 0 2px 4px -1px rgba(139, 92, 246, 0.06);
+}
+
+.card-green {
+  border-color: #10B981;
+  box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.1), 0 2px 4px -1px rgba(16, 185, 129, 0.06);
+}
+
+.card-yellow {
+  border-color: #F59E0B;
+  box-shadow: 0 4px 6px -1px rgba(245, 158, 11, 0.1), 0 2px 4px -1px rgba(245, 158, 11, 0.06);
+}
+
+.card-red {
+  border-color: #EF4444;
+  box-shadow: 0 4px 6px -1px rgba(239, 68, 68, 0.1), 0 2px 4px -1px rgba(239, 68, 68, 0.06);
+}
+
+.card-orange {
+  border-color: #F97316;
+  box-shadow: 0 4px 6px -1px rgba(249, 115, 22, 0.1), 0 2px 4px -1px rgba(249, 115, 22, 0.06);
+}
+
+.card-gray {
+  border-color: #6B7280;
+  box-shadow: 0 4px 6px -1px rgba(107, 114, 128, 0.1), 0 2px 4px -1px rgba(107, 114, 128, 0.06);
+}
+
 .ouro {
   position: relative;
   display:inline-block;
