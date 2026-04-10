@@ -9,7 +9,7 @@ export default function SiteHeader() {
       </Link>
       <nav className="site-nav" aria-label="Main">
         <Link href="/">Home</Link>
-        <Link href="/blog">Blog</Link>
+        <Link hidden={true} href="/blog">Blog</Link>
       </nav>
       <div className="site-header-actions">
         <ThemeToggle />
