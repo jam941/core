@@ -19,7 +19,7 @@ function isFullBlock(
   return 'type' in block;
 }
 
-function isFullPage(result: unknown): result is PageObjectResponse {
+export function isFullPage(result: unknown): result is PageObjectResponse {
   return (
     typeof result === 'object' &&
     result !== null &&
@@ -28,8 +28,7 @@ function isFullPage(result: unknown): result is PageObjectResponse {
   );
 }
 
-
-function getTitle(page: PageObjectResponse, name: string): string {
+export function getTitle(page: PageObjectResponse, name: string): string {
   const prop = page.properties[name];
   if (prop?.type === 'title') {
     return prop.title.map((t) => t.plain_text).join('');
@@ -37,7 +36,7 @@ function getTitle(page: PageObjectResponse, name: string): string {
   return '';
 }
 
-function getRichText(page: PageObjectResponse, name: string): string {
+export function getRichText(page: PageObjectResponse, name: string): string {
   const prop = page.properties[name];
   if (prop?.type === 'rich_text') {
     return prop.rich_text.map((t) => t.plain_text).join('');
