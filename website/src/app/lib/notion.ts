@@ -3,6 +3,7 @@ import type {
   PageObjectResponse,
   BlockObjectResponse,
   PartialBlockObjectResponse,
+  RichTextItemResponse,
 } from '@notionhq/client/build/src/api-endpoints';
 import { Job } from '../Interfaces/CardType';
 import { JobType } from '../Interfaces/JobTypeEnum';
@@ -61,115 +62,343 @@ function getMultiSelect(page: PageObjectResponse, name: string): string[] {
   return [];
 }
 
-interface RichTextSegment {
-  plain_text: string;
-  annotations: {
-    bold: boolean;
-    italic: boolean;
-    strikethrough: boolean;
-    underline: boolean;
-    code: boolean;
-    color: string;
-  };
-  href: string | null;
-}
-
-function richTextToMarkdown(segments: RichTextSegment[]): string {
-  return segments
+function richTextItemsToMarkdown(items: RichTextItemResponse[]): string {
+  return items
     .map((rt) => {
       let text = rt.plain_text;
       if (!text) return '';
-      if (rt.annotations.code) text = `\`${text}\``;
-      if (rt.annotations.bold && rt.annotations.italic)
-        text = `***${text}***`;
-      else if (rt.annotations.bold) text = `**${text}**`;
-      else if (rt.annotations.italic) text = `*${text}*`;
-      if (rt.annotations.strikethrough) text = `~~${text}~~`;
+      const { bold, italic, strikethrough, code } = rt.annotations;
+      if (code) {
+        text = `\`${text.replace(/`/g, '\\`')}\``;
+      } else {
+        if (bold && italic) text = `***${text}***`;
+        else if (bold) text = `**${text}**`;
+        else if (italic) text = `*${text}*`;
+      }
+      if (strikethrough) text = `~~${text}~~`;
       if (rt.href) text = `[${text}](${rt.href})`;
       return text;
     })
     .join('');
 }
 
-function getBlockText(block: BlockObjectResponse): string | null {
-  const rich: RichTextSegment[] | undefined = (() => {
-    switch (block.type) {
-      case 'paragraph':           return block.paragraph.rich_text;
-      case 'heading_1':           return block.heading_1.rich_text;
-      case 'heading_2':           return block.heading_2.rich_text;
-      case 'heading_3':           return block.heading_3.rich_text;
-      case 'bulleted_list_item':  return block.bulleted_list_item.rich_text;
-      case 'numbered_list_item':  return block.numbered_list_item.rich_text;
-      case 'to_do':              return block.to_do.rich_text;
-      case 'toggle':             return block.toggle.rich_text;
-      case 'callout':            return block.callout.rich_text;
-      case 'quote':              return block.quote.rich_text;
-      default:                   return undefined;
-    }
-  })() as RichTextSegment[] | undefined;
-
-  if (!rich) return null;
-  return richTextToMarkdown(rich);
+function escapeTableCell(s: string): string {
+  return s.replace(/\|/g, '\\|').replace(/\n/g, ' ');
 }
 
-
-function blockToLinePrefix(block: BlockObjectResponse): string {
-  switch (block.type) {
-    case 'heading_1':          return '# ';
-    case 'heading_2':          return '## ';
-    case 'heading_3':          return '### ';
-    case 'bulleted_list_item':
-    case 'numbered_list_item':
-    case 'to_do':
-    case 'toggle':             return '- ';
-    default:                   return '';
+function fencedCodeBlock(code: string, language: string): string {
+  const body = code.replace(/\n+$/, '');
+  let fence = '```';
+  while (body.includes(fence)) {
+    fence += '`';
   }
+  const lang = language && language !== 'plain text' ? language : '';
+  return `${fence}${lang}\n${body}\n${fence}`;
+}
+
+function mediaUrl(
+  media:
+    | { type: 'external'; external: { url: string } }
+    | { type: 'file'; file: { url: string } },
+): string | null {
+  if (media.type === 'external') return media.external.url;
+  if (media.type === 'file') return media.file.url;
+  return null;
+}
+
+async function listAllChildren(blockId: string): Promise<BlockObjectResponse[]> {
+  if (!notion) return [];
+  const out: BlockObjectResponse[] = [];
+  let cursor: string | undefined;
+  for (;;) {
+    const resp = await notion.blocks.children.list({
+      block_id: blockId,
+      start_cursor: cursor,
+    });
+    out.push(...resp.results.filter(isFullBlock));
+    if (!resp.has_more) break;
+    cursor = resp.next_cursor ?? undefined;
+    if (!cursor) break;
+  }
+  return out;
+}
+
+async function blockToMarkdownLines(
+  block: BlockObjectResponse,
+  depth: number,
+): Promise<string[]> {
+  const ind = '  '.repeat(depth);
+  const out: string[] = [];
+
+  const appendChildren = async (blockId: string, childDepth: number) => {
+    const kids = await listAllChildren(blockId);
+    for (const kid of kids) {
+      out.push(...(await blockToMarkdownLines(kid, childDepth)));
+    }
+  };
+
+  const prefixBlockquoteLines = (lines: string[]) => {
+    for (const line of lines) {
+      if (!line.trim()) out.push(`${ind}> `);
+      else out.push(`${ind}> ${line}`);
+    }
+  };
+
+  switch (block.type) {
+    case 'paragraph': {
+      const md = richTextItemsToMarkdown(block.paragraph.rich_text);
+      if (md.trim()) out.push(`${ind}${md}`);
+      if (block.has_children) await appendChildren(block.id, depth);
+      break;
+    }
+    case 'heading_1': {
+      const md = richTextItemsToMarkdown(block.heading_1.rich_text);
+      if (md.trim()) out.push(`${ind}# ${md}`);
+      if (block.has_children) await appendChildren(block.id, depth);
+      break;
+    }
+    case 'heading_2': {
+      const md = richTextItemsToMarkdown(block.heading_2.rich_text);
+      if (md.trim()) out.push(`${ind}## ${md}`);
+      if (block.has_children) await appendChildren(block.id, depth);
+      break;
+    }
+    case 'heading_3': {
+      const md = richTextItemsToMarkdown(block.heading_3.rich_text);
+      if (md.trim()) out.push(`${ind}### ${md}`);
+      if (block.has_children) await appendChildren(block.id, depth);
+      break;
+    }
+    case 'heading_4': {
+      const md = richTextItemsToMarkdown(block.heading_4.rich_text);
+      if (md.trim()) out.push(`${ind}#### ${md}`);
+      if (block.has_children) await appendChildren(block.id, depth);
+      break;
+    }
+    case 'bulleted_list_item': {
+      const md = richTextItemsToMarkdown(block.bulleted_list_item.rich_text);
+      if (md.trim()) out.push(`${ind}- ${md}`);
+      if (block.has_children) await appendChildren(block.id, depth + 1);
+      break;
+    }
+    case 'numbered_list_item': {
+      const md = richTextItemsToMarkdown(block.numbered_list_item.rich_text);
+      if (md.trim()) out.push(`${ind}1. ${md}`);
+      if (block.has_children) await appendChildren(block.id, depth + 1);
+      break;
+    }
+    case 'to_do': {
+      const md = richTextItemsToMarkdown(block.to_do.rich_text);
+      const mark = block.to_do.checked ? 'x' : ' ';
+      if (md.trim()) out.push(`${ind}- [${mark}] ${md}`);
+      else out.push(`${ind}- [${mark}]`);
+      if (block.has_children) await appendChildren(block.id, depth + 1);
+      break;
+    }
+    case 'toggle': {
+      const md = richTextItemsToMarkdown(block.toggle.rich_text);
+      if (md.trim()) out.push(`${ind}- ${md}`);
+      if (block.has_children) await appendChildren(block.id, depth + 1);
+      break;
+    }
+    case 'quote': {
+      const md = richTextItemsToMarkdown(block.quote.rich_text);
+      if (md.trim()) out.push(`${ind}> ${md}`);
+      if (block.has_children) {
+        const kids = await listAllChildren(block.id);
+        for (const k of kids) {
+          const inner = await blockToMarkdownLines(k, depth);
+          prefixBlockquoteLines(inner);
+        }
+      }
+      break;
+    }
+    case 'callout': {
+      let icon = '';
+      const ic = block.callout.icon;
+      if (ic?.type === 'emoji') icon = `${ic.emoji} `;
+      else if (ic?.type === 'file') icon = '📎 ';
+      const md = richTextItemsToMarkdown(block.callout.rich_text);
+      if (md.trim()) out.push(`${ind}> ${icon}${md}`);
+      else if (icon) out.push(`${ind}> ${icon.trimEnd()}`);
+      if (block.has_children) {
+        const kids = await listAllChildren(block.id);
+        for (const k of kids) {
+          const inner = await blockToMarkdownLines(k, depth);
+          prefixBlockquoteLines(inner);
+        }
+      }
+      break;
+    }
+    case 'code': {
+      const body = richTextItemsToMarkdown(block.code.rich_text);
+      const fence = fencedCodeBlock(body, block.code.language || '');
+      for (const line of fence.split('\n')) {
+        out.push(`${ind}${line}`);
+      }
+      break;
+    }
+    case 'divider': {
+      out.push(`${ind}---`);
+      break;
+    }
+    case 'equation': {
+      const expr = block.equation.expression;
+      const fence = fencedCodeBlock(expr, '');
+      for (const line of fence.split('\n')) {
+        out.push(`${ind}${line}`);
+      }
+      break;
+    }
+    case 'image': {
+      const url = mediaUrl(block.image);
+      const alt = escapeTableCell(
+        richTextItemsToMarkdown(block.image.caption) || 'Image',
+      );
+      if (url) out.push(`${ind}![${alt}](${url})`);
+      break;
+    }
+    case 'video': {
+      const media = block.video;
+      const url = mediaUrl(media);
+      const cap = richTextItemsToMarkdown(media.caption);
+      const label = cap.trim() || 'video';
+      if (url) out.push(`${ind}[${label}](${url})`);
+      break;
+    }
+    case 'pdf': {
+      const media = block.pdf;
+      const url = mediaUrl(media);
+      const cap = richTextItemsToMarkdown(media.caption);
+      const label = cap.trim() || 'PDF';
+      if (url) out.push(`${ind}[${label}](${url})`);
+      break;
+    }
+    case 'audio': {
+      const media = block.audio;
+      const url = mediaUrl(media);
+      const cap = richTextItemsToMarkdown(media.caption);
+      const label = cap.trim() || 'audio';
+      if (url) out.push(`${ind}[${label}](${url})`);
+      break;
+    }
+    case 'file': {
+      const f = block.file;
+      const url =
+        f.type === 'external' ? f.external.url : f.file.url;
+      const name =
+        f.name?.trim() ||
+        richTextItemsToMarkdown(f.caption).trim() ||
+        'File';
+      out.push(`${ind}[${name}](${url})`);
+      break;
+    }
+    case 'bookmark': {
+      const cap = richTextItemsToMarkdown(block.bookmark.caption);
+      const label = cap.trim() || block.bookmark.url;
+      out.push(`${ind}[${label}](${block.bookmark.url})`);
+      break;
+    }
+    case 'embed': {
+      const cap = richTextItemsToMarkdown(block.embed.caption);
+      const label = cap.trim() || block.embed.url;
+      out.push(`${ind}[${label}](${block.embed.url})`);
+      break;
+    }
+    case 'link_preview': {
+      out.push(`${ind}[${block.link_preview.url}](${block.link_preview.url})`);
+      break;
+    }
+    case 'link_to_page': {
+      const ltp = block.link_to_page;
+      if (ltp.type === 'page_id') {
+        const raw = ltp.page_id.replace(/-/g, '');
+        out.push(`${ind}[View in Notion](https://www.notion.so/${raw})`);
+      } else if (ltp.type === 'database_id') {
+        const raw = ltp.database_id.replace(/-/g, '');
+        out.push(`${ind}[View database in Notion](https://www.notion.so/${raw})`);
+      }
+      break;
+    }
+    case 'child_page': {
+      const title = block.child_page.title || 'Untitled';
+      out.push(`${ind}**${title}**`);
+      if (block.has_children) await appendChildren(block.id, depth + 1);
+      break;
+    }
+    case 'child_database': {
+      const title = block.child_database.title || 'Database';
+      out.push(`${ind}**${title}**`);
+      break;
+    }
+    case 'table': {
+      const rows = await listAllChildren(block.id);
+      const mdRows: string[][] = [];
+      for (const row of rows) {
+        if (row.type !== 'table_row') continue;
+        mdRows.push(
+          row.table_row.cells.map((cell) =>
+            escapeTableCell(richTextItemsToMarkdown(cell)),
+          ),
+        );
+      }
+      if (mdRows.length === 0) break;
+      const ncols = Math.max(...mdRows.map((r) => r.length), 1);
+      const padRow = (cells: string[]) => {
+        const row = [...cells];
+        while (row.length < ncols) row.push('');
+        return row;
+      };
+      const sepRow = (r: string[]) =>
+        `${ind}| ${r.map(() => '---').join(' | ')} |`;
+
+      if (mdRows.length === 1) {
+        const r = padRow(mdRows[0]);
+        out.push(`${ind}| ${r.join(' | ')} |`);
+        out.push(sepRow(r));
+        break;
+      }
+
+      if (block.table.has_column_header) {
+        const h = padRow(mdRows[0]);
+        out.push(`${ind}| ${h.join(' | ')} |`);
+        out.push(sepRow(h));
+        for (let i = 1; i < mdRows.length; i++) {
+          const r = padRow(mdRows[i]);
+          out.push(`${ind}| ${r.join(' | ')} |`);
+        }
+      } else {
+        for (const raw of mdRows) {
+          out.push(`${ind}${padRow(raw).join(' · ')}`);
+        }
+      }
+      break;
+    }
+    case 'column_list':
+    case 'column':
+    case 'tab':
+    case 'synced_block':
+    case 'template': {
+      if (block.has_children) await appendChildren(block.id, depth);
+      break;
+    }
+    case 'table_row':
+      break;
+    default:
+      break;
+  }
+
+  return out;
 }
 
 async function fetchDescription(pageId: string): Promise<string> {
   if (!notion) return '';
 
-  const response = await notion.blocks.children.list({ block_id: pageId });
-  const topBlocks = response.results.filter(isFullBlock);
-
-  const listTypes = new Set([
-    'bulleted_list_item',
-    'numbered_list_item',
-    'to_do',
-    'toggle',
-  ]);
-
-  const enriched = await Promise.all(
-    topBlocks.map(async (block) => {
-      let children: BlockObjectResponse[] = [];
-      if (block.has_children && listTypes.has(block.type)) {
-        const childResp = await notion.blocks.children.list({
-          block_id: block.id,
-        });
-        children = childResp.results.filter(isFullBlock);
-      }
-      return { block, children };
-    }),
-  );
-
+  const top = await listAllChildren(pageId);
   const lines: string[] = [];
-
-  for (const { block, children } of enriched) {
-    const text = getBlockText(block);
-    if (text === null) continue;
-
-    const prefix = blockToLinePrefix(block);
-    if (text.trim()) lines.push(`${prefix}${text}`);
-
-    for (const child of children) {
-      const childText = getBlockText(child);
-      if (childText?.trim()) {
-        const childPrefix = blockToLinePrefix(child);
-        lines.push(`  ${childPrefix}${childText}`);
-      }
-    }
+  for (const block of top) {
+    lines.push(...(await blockToMarkdownLines(block, 0)));
   }
-
   return lines.join('\n');
 }
 

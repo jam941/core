@@ -1,45 +1,202 @@
-import React, { useState, type ReactNode } from 'react';
+import React, { useState, type CSSProperties } from 'react';
+import ReactMarkdown, { type Components } from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { Job } from '../Interfaces/CardType';
 import { JobType } from '../Interfaces/JobTypeEnum';
 
-const MD_INLINE =
-  /(\*\*\*(.+?)\*\*\*|\*\*(.+?)\*\*|\*(.+?)\*|`(.+?)`|~~(.+?)~~|\[([^\]]+)\]\(([^)]+)\))/g;
+const DESC_FONT =
+  '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif';
 
-function renderInlineMarkdown(text: string): ReactNode {
-  const parts: ReactNode[] = [];
-  let lastIndex = 0;
-  let key = 0;
+const descText: CSSProperties = {
+  fontSize: '14px',
+  lineHeight: 1.5,
+  color: 'var(--color-text-muted)',
+  fontFamily: DESC_FONT,
+  textAlign: 'left',
+};
 
-  for (const m of text.matchAll(MD_INLINE)) {
-    if (m.index > lastIndex) parts.push(text.slice(lastIndex, m.index));
-
-    if (m[2] !== undefined)
-      parts.push(<strong key={key}><em>{m[2]}</em></strong>);
-    else if (m[3] !== undefined)
-      parts.push(<strong key={key}>{m[3]}</strong>);
-    else if (m[4] !== undefined)
-      parts.push(<em key={key}>{m[4]}</em>);
-    else if (m[5] !== undefined)
-      parts.push(
-        <code key={key} style={{ background: 'var(--color-code-bg, rgba(135,131,120,0.15))', padding: '2px 4px', borderRadius: '3px', fontSize: '0.9em' }}>
-          {m[5]}
-        </code>,
+const jobDescriptionMarkdownComponents: Components = {
+  p: ({ children }) => (
+    <p style={{ ...descText, margin: '0 0 8px 0' }}>{children}</p>
+  ),
+  h1: ({ children }) => (
+    <h1 style={{ ...descText, fontSize: '1.15rem', margin: '10px 0 6px 0', color: 'var(--color-text)' }}>{children}</h1>
+  ),
+  h2: ({ children }) => (
+    <h2 style={{ ...descText, fontSize: '1.05rem', margin: '10px 0 6px 0', color: 'var(--color-text)' }}>{children}</h2>
+  ),
+  h3: ({ children }) => (
+    <h3 style={{ ...descText, fontSize: '0.98rem', margin: '8px 0 4px 0', color: 'var(--color-text-muted)' }}>{children}</h3>
+  ),
+  h4: ({ children }) => (
+    <h4 style={{ ...descText, fontSize: '0.95rem', margin: '8px 0 4px 0', color: 'var(--color-text-muted)' }}>{children}</h4>
+  ),
+  ul: ({ children }) => (
+    <ul
+      style={{
+        ...descText,
+        listStyleType: 'disc',
+        paddingLeft: '18px',
+        margin: '0 0 8px 0',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '6px',
+      }}
+    >
+      {children}
+    </ul>
+  ),
+  ol: ({ children }) => (
+    <ol
+      style={{
+        ...descText,
+        paddingLeft: '20px',
+        margin: '0 0 8px 0',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '6px',
+      }}
+    >
+      {children}
+    </ol>
+  ),
+  li: ({ children, className, ...props }) => (
+    <li className={className} style={{ ...descText, fontSize: '14px', color: 'var(--color-text-muted)' }} {...props}>
+      {children}
+    </li>
+  ),
+  a: ({ href, children }) => (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      style={{ color: 'var(--color-accent)', textDecoration: 'underline' }}
+    >
+      {children}
+    </a>
+  ),
+  code: ({ className, children, ...props }) => {
+    if (className?.includes('language-')) {
+      return (
+        <code
+          className={className}
+          style={{
+            fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace',
+            fontSize: '12px',
+          }}
+          {...props}
+        >
+          {children}
+        </code>
       );
-    else if (m[6] !== undefined)
-      parts.push(<del key={key}>{m[6]}</del>);
-    else if (m[7] !== undefined && m[8] !== undefined)
-      parts.push(
-        <a key={key} href={m[8]} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--color-accent)', textDecoration: 'underline' }}>
-          {m[7]}
-        </a>,
+    }
+    return (
+      <code
+        style={{
+          background: 'var(--color-code-bg, rgba(135,131,120,0.15))',
+          padding: '2px 4px',
+          borderRadius: '3px',
+          fontSize: '0.9em',
+          fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace',
+        }}
+        {...props}
+      >
+        {children}
+      </code>
+    );
+  },
+  pre: ({ children }) => (
+    <pre
+      style={{
+        margin: '6px 0',
+        overflowX: 'auto',
+        background: 'var(--color-code-bg, rgba(135,131,120,0.12))',
+        padding: '10px 12px',
+        borderRadius: '6px',
+      }}
+    >
+      {children}
+    </pre>
+  ),
+  blockquote: ({ children }) => (
+    <blockquote
+      style={{
+        margin: '6px 0 8px 0',
+        paddingLeft: '12px',
+        borderLeft: '3px solid var(--color-border)',
+        color: 'var(--color-text-subtle)',
+      }}
+    >
+      {children}
+    </blockquote>
+  ),
+  hr: () => <hr style={{ border: 'none', borderTop: '1px solid var(--color-border)', margin: '10px 0' }} />,
+  table: ({ children }) => (
+    <div style={{ overflowX: 'auto', margin: '8px 0' }}>
+      <table
+        style={{
+          borderCollapse: 'collapse',
+          width: '100%',
+          fontSize: '13px',
+          fontFamily: DESC_FONT,
+          color: 'var(--color-text-muted)',
+        }}
+      >
+        {children}
+      </table>
+    </div>
+  ),
+  th: ({ children }) => (
+    <th
+      style={{
+        border: '1px solid var(--color-border)',
+        padding: '6px 8px',
+        textAlign: 'left',
+        background: 'var(--card-inner-bg)',
+        fontWeight: 600,
+      }}
+    >
+      {children}
+    </th>
+  ),
+  td: ({ children }) => (
+    <td style={{ border: '1px solid var(--color-border)', padding: '6px 8px', verticalAlign: 'top' }}>
+      {children}
+    </td>
+  ),
+  img: ({ src, alt }) => (
+    // eslint-disable-next-line @next/next/no-img-element -- Notion uses arbitrary external image URLs
+    <img
+      src={src ?? ''}
+      alt={alt ?? ''}
+      style={{ maxWidth: '100%', height: 'auto', borderRadius: '6px', margin: '6px 0' }}
+    />
+  ),
+  input: ({ type, checked, ...props }) => {
+    if (type === 'checkbox') {
+      return (
+        <input
+          type="checkbox"
+          checked={Boolean(checked)}
+          onChange={() => {}}
+          style={{ marginRight: '6px', cursor: 'default' }}
+          {...props}
+        />
       );
+    }
+    return <input type={type} {...props} />;
+  },
+};
 
-    key++;
-    lastIndex = m.index + m[0].length;
-  }
-
-  if (lastIndex < text.length) parts.push(text.slice(lastIndex));
-  return parts.length <= 1 ? parts[0] ?? '' : <>{parts}</>;
+function JobDescriptionMarkdown({ markdown }: { markdown: string }) {
+  if (!markdown.trim()) return null;
+  return (
+    <div style={descText}>
+      <ReactMarkdown remarkPlugins={[remarkGfm]} components={jobDescriptionMarkdownComponents}>
+        {markdown}
+      </ReactMarkdown>
+    </div>
+  );
 }
 
 interface CardProps {
@@ -76,94 +233,6 @@ const Card = ({ data, onSkillClick, activeFilters, isAnimatingOut }: CardProps) 
   };
 
   const borderAccent = accentColorForJobType(data.Type as JobType);
-
-  const getDescList = () => {
-    const lines = data.Description.split('\n');
-    const bulletPoints: Array<{ main: string; sub: string[] }> = [];
-
-    let currentMain = '';
-    let currentSubs: string[] = [];
-
-    for (const line of lines) {
-      if (line.startsWith('### ') || line.startsWith('  - ') || line.startsWith('  * ')) {
-        const text = line.replace(/^(?:### |  [-*] )/, '').trim();
-        if (text) currentSubs.push(text);
-
-      } else if (line.startsWith('## ') || line.startsWith('- ') || line.startsWith('* ')) {
-        if (currentMain) bulletPoints.push({ main: currentMain, sub: currentSubs });
-        currentMain = line.replace(/^(?:## |[-*] )/, '').trim();
-        currentSubs = [];
-        
-      } else if (line.trim()) {
-        if (currentMain) bulletPoints.push({ main: currentMain, sub: currentSubs });
-        currentMain = line.trim();
-        currentSubs = [];
-      }
-    }
-
-    if (currentMain) {
-      bulletPoints.push({ main: currentMain, sub: currentSubs });
-    }
-
-    return (
-      <ul
-        style={{
-          listStyleType: 'disc',
-          paddingLeft: '16px',
-          margin: '0',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '6px',
-          fontFamily:
-            '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif',
-        }}
-      >
-        {bulletPoints.map((point, index) => (
-          <li
-            key={index}
-            style={{
-              fontSize: '14px',
-              lineHeight: '1.5',
-              color: 'var(--color-text-muted)',
-              marginBottom: '2px',
-              textAlign: 'left',
-              fontFamily:
-                '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif',
-            }}
-          >
-            {renderInlineMarkdown(point.main)}
-            {point.sub.length > 0 && (
-              <ul
-                style={{
-                  listStyleType: 'circle',
-                  paddingLeft: '20px',
-                  margin: '4px 0 0 0',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  gap: '4px',
-                }}
-              >
-                {point.sub.map((subPoint, subIndex) => (
-                  <li
-                    key={subIndex}
-                    style={{
-                      fontSize: '13px',
-                      lineHeight: '1.4',
-                      color: 'var(--color-text-subtle)',
-                      fontFamily:
-                        '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif',
-                    }}
-                  >
-                    {renderInlineMarkdown(subPoint)}
-                  </li>
-                ))}
-              </ul>
-            )}
-          </li>
-        ))}
-      </ul>
-    );
-  };
 
   const renderSkills = () => {
     if (!data.Skills) return null;
@@ -294,7 +363,7 @@ const Card = ({ data, onSkillClick, activeFilters, isAnimatingOut }: CardProps) 
         >
           <div style={{ flex: 1 }}>
             {!isOpen ? (
-              getDescList()
+              <JobDescriptionMarkdown markdown={data.Description} />
             ) : (
               <p
                 style={{
