@@ -5,7 +5,7 @@ import '../styles/App.css';
 import { Job } from '../Interfaces/CardType';
 import Bio from './Bio';
 import Card from './Card';
-import { jobId } from '../lib/jobs';
+import { jobId, sortJobsForDisplay } from '../lib/jobs';
 
 interface AppProps {
   initialJobs: Job[];
@@ -38,7 +38,7 @@ function buildAnimatingOut(
 }
 
 function App({ initialJobs }: AppProps) {
-  const [jobs, setJobs] = useState<Job[]>(() => [...initialJobs]);
+  const [jobs, setJobs] = useState<Job[]>(() => sortJobsForDisplay([...initialJobs]));
   const [activeFilters, setActiveFilters] = useState<string[]>([]);
   const [dynamicFilters, setDynamicFilters] = useState<{
     [key: string]: { filterValue: string; displayText: string };
@@ -91,11 +91,13 @@ function App({ initialJobs }: AppProps) {
 
   const filterJobs = (filters: string[]) => {
     if (filters.length === 0) {
-      setJobs([...initialJobs]);
+      setJobs(sortJobsForDisplay([...initialJobs]));
       return;
     }
 
-    setJobs(initialJobs.filter((job) => jobMatchesFilters(job, filters)));
+    setJobs(
+      sortJobsForDisplay(initialJobs.filter((job) => jobMatchesFilters(job, filters)))
+    );
   };
 
   const changeFilter = (filterValue: string) => {
@@ -115,7 +117,7 @@ function App({ initialJobs }: AppProps) {
 
       scheduleFilterUpdate(() => {
         if (newFilters.length === 0) {
-          setJobs([...initialJobs]);
+          setJobs(sortJobsForDisplay([...initialJobs]));
         } else {
           filterJobs(newFilters);
         }
@@ -238,12 +240,15 @@ function App({ initialJobs }: AppProps) {
             {filterButton('Backend Development', 'backend')}
             {filterButton('Cloud / AWS', 'cloud')}
             {filterButton('Testing', 'testing')}
+            {filterButton('Leadership', 'leadership')}
             {filterButton('Java', 'javac')}
             {filterButton('Javascript / Typescript', 'javascript')}
             {filterButton('Vue', 'vue')}
             {filterButton('React', 'react')}
             {filterButton('Python', 'python')}
             {filterButton('C#', 'c#')}
+            {filterButton('Golang', 'go')}
+            {}
             {renderDynamicFilterButtons()}
           </div>
         </div>

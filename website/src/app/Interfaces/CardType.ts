@@ -10,4 +10,6 @@ export interface Job {
     Description: string;
     Skills: string;
     meta?: string;
+    githubUrl?: string;
+    projectUrl?: string;
 }

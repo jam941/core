@@ -62,6 +62,37 @@ function getMultiSelect(page: PageObjectResponse, name: string): string[] {
   return [];
 }
 
+function getPropertyCaseInsensitive(
+  page: PageObjectResponse,
+  canonicalName: string,
+): PageObjectResponse['properties'][string] | undefined {
+  const target = canonicalName.toLowerCase();
+  for (const [key, prop] of Object.entries(page.properties)) {
+    if (key.toLowerCase() === target) {
+      return prop;
+    }
+  }
+  return undefined;
+}
+
+
+function getUrl(page: PageObjectResponse, canonicalName: string): string {
+  const prop = getPropertyCaseInsensitive(page, canonicalName);
+  if (!prop) return '';
+
+  if (prop.type === 'url' && prop.url) {
+    return prop.url.trim();
+  }
+
+  if (prop.type === 'rich_text') {
+    for (const rt of prop.rich_text) {
+      if (rt.href?.trim()) return rt.href.trim();
+    }
+  }
+
+  return '';
+}
+
 function richTextItemsToMarkdown(items: RichTextItemResponse[]): string {
   return items
     .map((rt) => {
@@ -415,6 +446,9 @@ function notionPageToJob(
   const skills = getMultiSelect(page, 'Skills');
   const tags = getMultiSelect(page, 'Tags');
 
+  const githubUrl = getUrl(page, 'Github Repository');
+  const projectUrl = getUrl(page, 'Project Link');
+
   return {
     Type: type,
     Title: getRichText(page, 'Job Title'),
@@ -425,6 +459,8 @@ function notionPageToJob(
     EndDate: getRichText(page, 'End Date'),
     Brief: getRichText(page, 'Brief'),
     meta: tags.length > 0 ? tags.join(' ') : undefined,
+    ...(githubUrl ? { githubUrl } : {}),
+    ...(projectUrl ? { projectUrl } : {}),
   };
 }
 
